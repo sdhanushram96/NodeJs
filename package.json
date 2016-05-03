@@ -1,0 +1,30 @@
+{
+  "name": "jewellery",
+  "version": "1.0.0",
+  "description": "Software for jewellery shops",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prajankya/jewellery.git"
+  },
+  "keywords": [
+    "jewellery",
+    "nodejs",
+    "mongodb",
+    "billing",
+    "db"
+  ],
+  "author": "Prajankya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/prajankya/jewellery/issues"
+  },
+  "homepage": "https://github.com/prajankya/jewellery#readme",
+  "dependencies": {
+    "assert": "^1.3.0",
+    "mongodb": "^2.1.18"
+  }
+}
