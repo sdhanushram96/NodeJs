@@ -20,6 +20,10 @@ var ArticleSchema = new mongoose.Schema({
 		default: "Stock",
 		enum: ["Stock", "Sales"]
 	},
+	weight: {
+		type: Number,
+		required: true
+	},
 	completed: Boolean,
 	note: String,
 	added: {

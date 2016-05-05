@@ -7,7 +7,7 @@ var Article = require('../models/Article.js');
 router.get('/', function(req, res, next) {
 	Article
 		.find()
-		.where('drawer').equals("Stock")
+		.where('drawer').equals("Sales")
 		.exec(function(err, articles) {
 			if (err) return next(err);
 			res.json(articles);
@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
 	Article
 		.find()
-		.where('drawer').equals("Stock")
+		.where('drawer').equals("Sales")
 		.where('_id').equals(req.params.id)
 		.exec(function(err, post) {
 			if (err) return next(err);
@@ -26,7 +26,7 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-	req.body.drawer = "Stock";
+	req.body.drawer = "Sales";
 	Article.create(req.body, function(err, post) {
 		if (err) return next(err);
 		res.json(post);
@@ -39,7 +39,7 @@ router.put('/:id', function(req, res, next) {
 	};
 	Article.update({
 			_id: req.params.id,
-			drawer: "Stock"
+			drawer: "Sales"
 		},
 		req.body,
 		opts,
@@ -52,7 +52,7 @@ router.put('/:id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
 	Article.remove({
 			_id: req.params.id,
-			drawer: "Stock"
+			drawer: "Sales"
 		},
 		function(err, post) {
 			if (err) return next(err);
