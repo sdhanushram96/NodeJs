@@ -1,9 +1,12 @@
 var mongoose = require('mongoose');
 
 var ArticleSchema = new mongoose.Schema({
-	type: {
-		type: String,
-		required: true
+	category: {
+		type: mongoose.Schema.Types.ObjectId
+	},
+	image: {
+		data: Buffer,
+		contentType: String
 	},
 	metal: {
 		type: String,
