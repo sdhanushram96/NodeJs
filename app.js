@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var articles = require('./routes/articles');
+var stock = require('./routes/stock');
+var sales = require('./routes/sales');
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/jewel', function(err) {
@@ -34,7 +35,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/articles', articles);
+app.use('/stock', stock);
+app.use('/sales', sales);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
