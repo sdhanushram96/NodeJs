@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <title><%= title %> Article</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+  </head>
+	<body>
+		<ng-view></ng-view>
+		<script type="text/ng-template" id="/home.html">
+			<h1>Add Article</h1>
+			<center>
+				<h2>Select Metal:</h2>	
+				<table>
+					<tr>
+						<td>
+							<a href="#/gold.html" >
+								<div class="button">
+									<img src="../images/gold.png"/>
+									<center>
+										<h2>Gold</h2>
+									</center>
+								</div>
+							</a>
+						</td>
+						<td>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+						</td>
+						<td>
+							<a href="#/silver.html">
+								<div class="button">
+									<img src="../images/silver.png"/>
+									<center>
+										<h2>Silver</h2>
+									</center>
+								</div>
+							</a>
+						</td>
+					</tr>
+				</table>
+			</center>
+	  	</script>
+		<script>
+			function TodoController($scope){
+				$scope.todos = [
+			        { name: 'Master HTML/CSS/Javascript', completed: true },
+			        { name: 'Learn AngularJS', completed: false },
+			        { name: 'Build NodeJS backend', completed: false },
+			        { name: 'Get started with ExpressJS', completed: false },
+			        { name: 'Setup MongoDB database', completed: false },
+			        { name: 'Be awesome!', completed: false },
+	      		]
+	    	}
+	    	angular.module('app', ['ngRoute'])
+	    	.config(['$routeProvider', function ($routeProvider) {
+			    $routeProvider
+					.when('/', {
+			        	templateUrl: '/home.html'
+			      	})
+				}]);
+		</script>
+	</body>
+</html>
