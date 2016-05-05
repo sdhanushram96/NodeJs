@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+  </head>
+
+  <body>
+
+<ng-view></ng-view>
+  
+<!-- Template -->   
+<script type="text/ng-template" id="/articles.html">
+  Search: <input type="text" ng-model="search.name">
+  <ul>
+    <li ng-repeat="article in articles | filter: search">
+      <input type="checkbox" ng-model="article.completed">
+      <a href="#/{{$index}}">{{article.name}}</a>
+    </li>
+  </ul>
+</script>
+  
+  
+<script type="text/ng-template" id="/articleDetails.html">
+  <h1>{{ article.name }}</h1>
+  completed: <input type="checkbox" ng-model="article.completed">
+  note: <textarea>{{ article.note }}</textarea>
+</script>
+
+
+  <script>
+    angular.module('app', ['ngRoute'])
+
+  .factory('Articles', ['$http', function($http){
+      return $http.get('/articles');
+  }])
+
+  .controller('ArticleController', ['$scope', 'Articles', function ($scope, Articles) {
+    $scope.articles = Articles;
+    
+    Articles.success(function(data){
+        $scope.articles = data;
+      }).error(function(data, status){
+        console.log(data, status);
+        $scope.articles = [];
+      });
+  }])
+  
+  .controller('ArticleDetailCtrl', ['$scope', '$routeParams', 'Articles', function ($scope, $routeParams, Articles) {
+    $scope.article = Articles[$routeParams.id];
+  }])
+  
+  .config(['$routeProvider', function ($routeProvider) {
+    $routeProvider
+      .when('/', {
+        templateUrl: '/articles.html',
+        controller: 'ArticleController'
+      })
+    
+      .when('/:id', {
+        templateUrl: '/articleDetails.html',
+        controller: 'ArticleDetailCtrl'
+     });
+  }]);
+  </script>
+</body>
+</html>
+
+</html>
