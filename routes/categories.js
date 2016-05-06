@@ -16,8 +16,9 @@ router.get('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
 	Category.findById(req.params.id, function(err, doc) {
 		if (err) return next(err);
-		res.contentType(doc.image.contentType);
-		res.send(doc.image.data);
+		/*res.contentType(doc.image.contentType);
+		res.send(doc.image.data);*/
+		res.json(doc);
 	});
 });
 
@@ -30,9 +31,11 @@ router.post('/', function(req, res, next) {
 /
 
 /
+
 var fs = require('fs');
 var Category = require('./models/Category.js');
 var a = new Category;
+a.name = "wedding ring";
 a.image.data = fs.readFileSync("./a.png");
 a.image.contentType = 'image/png';
 a.save(function(err, a) {

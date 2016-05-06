@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var stock = require('./routes/stock');
 var sales = require('./routes/sales');
+var localizes = require('./routes/localizes');
 var categories = require('./routes/categories');
 
 var mongoose = require('mongoose');
@@ -40,6 +41,7 @@ app.use('/', routes);
 app.use('/api/stock', stock);
 app.use('/api/sales', sales);
 app.use('/api/categories', categories);
+app.use('/api/localize', localizes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -71,6 +73,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;
