@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-init = "lang='mar'">
+  <head>
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title %> Article</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    -->
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-route/angular-route.min.js"></script>
+	
+	<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+    -->
+    <script src="/bower_components/angular-deckgrid/angular-deckgrid.js"></script>    
+    <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+	<script src="/javascripts/jquery-1.11.2.min.js"></script>
+
+	<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="/stylesheets/numpad.css" />
+	<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
+	<!--<script src="javascripts/bootstrap.min.js" type="text/javascript"></script>-->
+	<script src="/javascripts/numpad.js" type="text/javascript"></script>
+
+  </head>
+	<body>
+		<ng-include src="'/header.html'"></ng-include>
+		<ng-view></ng-view>
+		<script type="text/ng-template" id="/home.html">
+			<h1>Add Article</h1>
+			<center>
+				<h2>Select Metal:</h2>	
+				<table>
+					<tr>
+						<td>
+							<a href="#/Gold" >
+								<div class="button">
+									<img src="../images/gold.png"/>
+									<center>
+										<h2>{{gold}}</h2>
+									</center>
+								</div>
+							</a>
+						</td>
+						<td>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+						</td>
+						<td>
+							<a href="#/Silver">
+								<div class="button">
+									<img src="../images/silver.png"/>
+									<center>
+										<h2>{{silver}}</h2>
+									</center>
+								</div>
+							</a>
+						</td>
+					</tr>
+				</table>
+			</center>
+	  	</script>
+	  	
+	  	<script type="text/ng-template" id="/categories_silver.html">
+		  			  	<style type="text/css">
+img{
+	width: 80%;
+}
+.deckgrid .column-1-1 {
+	width: 100%;
+}
+
+
+.deckgrid[deckgrid]::before {
+	/* Specifies that the grid should have a maximum of 4 columns. Each column will have the classes 'column' and 'column-1-4' */
+	content: '6 .column.column-1-6';
+	font-size: 0; /* See https://github.com/akoenig/angular-deckgrid/issues/14#issuecomment-35728861 */
+	visibility: hidden;
+}
+
+.deckgrid .column {
+	float: left;
+}
+
+.deckgrid .column-1-6 {
+	width: 16.66%;
+}
+
+@media screen and (max-width: 480px){
+	.deckgrid[deckgrid]::before {
+		content: '1 .column.column-1-1';
+	}
+}
+</style>
+
+    
+			<h1>Add Silver Article to Stock</h1>
+			<center>
+				<h2>Select Category:</h2>
+				
+				<div deckgrid class="deckgrid" source="categories">
+				<a ng-href="/add/#/Silver/{{card._id}}">
+					<div class="a-card button">
+	    				<h3>{{card.name}}</h3>
+	    				<img src="" data-ng-src="data:image/png;base64,{{card.image}}"/>
+					</div>
+					</a>
+				</div>
+		</script>
+	  	<script type="text/ng-template" id="/categories_gold.html">
+		  	<style type="text/css">
+img{
+	width: 80%;
+}
+.deckgrid .column-1-1 {
+	width: 100%;
+}
+
+
+.deckgrid[deckgrid]::before {
+	/* Specifies that the grid should have a maximum of 4 columns. Each column will have the classes 'column' and 'column-1-4' */
+	content: '6 .column.column-1-6';
+	font-size: 0; /* See https://github.com/akoenig/angular-deckgrid/issues/14#issuecomment-35728861 */
+	visibility: hidden;
+}
+
+.deckgrid .column {
+	float: left;
+}
+
+.deckgrid .column-1-6 {
+	width: 16.66%;
+}
+
+@media screen and (max-width: 480px){
+	.deckgrid[deckgrid]::before {
+		content: '1 .column.column-1-1';
+	}
+}
+</style>
+			<h1>Add Gold Article to Stock</h1>
+			<center>
+				<h2>Select Category:</h2>
+				
+				<div deckgrid class="deckgrid" source="categories">
+				<a ng-href="/add/#/Gold/{{card._id}}">
+					<div class="a-card button">
+	    				<h3>{{card.name}}</h3>
+	    				<img src="" data-ng-src="data:image/png;base64,{{card.image}}"/>
+					</div>
+					</a>
+				</div>
+		</script>
+		<script type="text/ng-template" id="/add_info.html">		
+
+			<h2>Metal : {{metal}}</h2>
+			<h2>Type : {{category_name}}</h2>
+			<img src="{{category_src}}"/>
+			<h2> {{wages}} : <input id="wages" ng-model="wage"/></h2>
+
+		</script>
+		<script>
+			function getL($scope, word){
+				return $scope.lang?getMar($scope.locale,word):word;
+			}
+			function getMar(ar, en){
+				for (var i = 0; i < ar.length; i++) {
+					if(ar[i].eng == en){
+						if(ar[i].mar){
+							return ar[i].mar;
+						}
+						return en;
+					}
+				}
+				return en;
+			}
+			function l(ar){
+				ar[0]
+					.get("/api/localize/")
+					.success( function(response) {
+						ar[1].locale = response;
+						var obj = ar[2];
+						for (var key in obj) {
+							if (obj.hasOwnProperty(key)) {
+								ar[1][key]=getL(ar[1],obj[key]);
+							}
+						}
+						if(ar[3]){
+							ar[3]();
+						}
+					});
+			}
+	    	angular.module('app', [
+	    		'ngRoute',
+	    		'akoenig.deckgrid'
+	    	])
+	    	.config(['$routeProvider', function ($routeProvider) {
+			    $routeProvider
+					.when('/', {
+			        	templateUrl: '/home.html',
+			        	controller: 'homeController'
+			      	})
+			      	.when('/Gold', {
+						templateUrl: '/categories_gold.html',
+						controller: 'categoriesController'
+			      	})
+			      	.when('/Silver', {
+						templateUrl: '/categories_silver.html',
+						controller: 'categoriesController'
+			      	})
+			      	.otherwise({
+						templateUrl: '/add_info.html',
+						controller: 'add_infoController'
+					});
+					
+			}])
+			.controller('homeController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
+				l([$http, $scope, {gold:"Gold", silver:"Silver"}]);
+			}])
+			.controller('categoriesController', ['$http', '$scope', '$routeParams', function ($http, $scope, $routeParams) {
+				$http.get('/api/categories').success(function(data){
+	        		$scope.categories = data;
+	        		var obj = {};
+	        		for (var i = data.length - 1; i >= 0; i--) {
+	        			obj[data[i].name] = data[i].name;
+	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
+	        		}
+	        		l([$http, $scope, obj,function(){
+						for (var i = data.length - 1; i >= 0; i--) {
+		        			$scope.categories[i].name = $scope[data[i].name];
+		        		}
+	        		}]);
+	      		}).error(function(data, status){
+	        		console.log(data, status);
+	        		$scope.categories = [];
+	      		});
+    		}])
+			.controller('add_infoController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
+				var a=($location.path().split("/"));
+				$http
+					.get("/api/categories/"+a[2])
+					.success(function(data){
+						$scope.category_src ="data:image/png;base64," + base64ArrayBuffer(data.image.data.data);;
+						l([$http, $scope, {metal:a[1], category_name: data.name, wages:"wages"}]);
+						
+						$(function(){
+							$("#wages").numpad();
+						});
+					});
+				
+    		}]);
+
+   function base64ArrayBuffer(arrayBuffer) {
+  var base64    = ''
+  var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+
+  var bytes         = new Uint8Array(arrayBuffer)
+  var byteLength    = bytes.byteLength
+  var byteRemainder = byteLength % 3
+  var mainLength    = byteLength - byteRemainder
+
+  var a, b, c, d
+  var chunk
+
+  // Main loop deals with bytes in chunks of 3
+  for (var i = 0; i < mainLength; i = i + 3) {
+    // Combine the three bytes into a single integer
+    chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
+
+    // Use bitmasks to extract 6-bit segments from the triplet
+    a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
+    b = (chunk & 258048)   >> 12 // 258048   = (2^6 - 1) << 12
+    c = (chunk & 4032)     >>  6 // 4032     = (2^6 - 1) << 6
+    d = chunk & 63               // 63       = 2^6 - 1
+
+    // Convert the raw binary segments to the appropriate ASCII encoding
+    base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+  }
+
+  // Deal with the remaining bytes and padding
+  if (byteRemainder == 1) {
+    chunk = bytes[mainLength]
+
+    a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
+
+    // Set the 4 least significant bits to zero
+    b = (chunk & 3)   << 4 // 3   = 2^2 - 1
+
+    base64 += encodings[a] + encodings[b] + '=='
+  } else if (byteRemainder == 2) {
+    chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
+
+    a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
+    b = (chunk & 1008)  >>  4 // 1008  = (2^6 - 1) << 4
+
+    // Set the 2 least significant bits to zero
+    c = (chunk & 15)    <<  2 // 15    = 2^4 - 1
+
+    base64 += encodings[a] + encodings[b] + encodings[c] + '='
+  }
+  
+  return base64
+}
+		</script>
+	</body>
+</html>
