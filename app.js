@@ -12,7 +12,9 @@ var localizes = require('./routes/localizes');
 var categories = require('./routes/categories');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/jewel', function(err) {
+
+mongoose.connect('mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery', function(err) {
+  //mongoose.connect('mongodb://localhost/jewel', function(err) {
   if (err) {
     console.log('connection error', err);
   } else {
