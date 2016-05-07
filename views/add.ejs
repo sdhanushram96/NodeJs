@@ -13,6 +13,7 @@
     <script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
     <script src="/bower_components/angular/angular.js"></script>
     <script src="/bower_components/angular-route/angular-route.min.js"></script>
+	<script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
 	
 	<script src="/bower_components/angular-deckgrid/angular-deckgrid.js"></script>    
     <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
@@ -70,7 +71,7 @@
 	  	</script>
 	  	
 	  	<script type="text/ng-template" id="/categories_silver.html">
-		  			  	<style type="text/css">
+		  	<style type="text/css">
 img{
 	width: 80%;
 }
@@ -215,16 +216,29 @@ img{
 			$(function(){
 				var toggle = $("#langToggle").bootstrapToggle({
 					on: 'English',
-      				off: 'Marathi',
-      				offstyle:"warning"
+						off: 'Marathi',
+						offstyle:"warning"
 				}).change(function() {
 					window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
 					l([window.obj]);
+					console.log("setting");
+					Cookies.set("my_lang_settings", window.scope.lang);
+					console.log(Cookies.get("my_lang_settings"));
 					//$('#console-event').html('Toggle: ' + $(this).prop('checked'))
 				});
-				if(window.scope.lang != "mar"){
+				var lang = Cookies.get("my_lang_settings");
+				if(lang){
+					window.scope.lang = lang;
+				}else{
+					if(!window.scope.lang){
+						toggle.bootstrapToggle("off");
+					}
+				}
+				
+				if(window.scope.lang == "eng"){
 					toggle.bootstrapToggle('on');
 				}
+				
 				//.console.log(window.scope.lang);
 				// data-toggle="toggle" data-on="English" data-off="Marathi"
 			});
