@@ -1,67 +1,118 @@
 <!DOCTYPE html>
 <html ng-app="app">
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
-  </head>
-  <body>
-<ng-view></ng-view>
-  
-<!-- Template -->   
-<script type="text/ng-template" id="/articles.html">
-  Search: <input type="text" ng-model="search.name">
-  <ul>
-    <li ng-repeat="article in articles | filter: search">
-      <input type="checkbox" ng-model="article.completed">
-      <a href="#/{{$index}}">{{article.name}}</a>
-    </li>
-  </ul>
+<head>
+	<title>Jewellery Software</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
+	<link href="/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+
+	<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
+	<script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
+	<script src="/bower_components/angular/angular.js"></script>
+	<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+
+	<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+	
+</head>
+<body ng-controller="bodyController">
+
+<nav class="navbar navbar-inverse ">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">S.S.S.</a>
+		</div>
+		<div class="nav navbar-nav navbar-right" style="padding: 10px;">
+			<input type="checkbox" id="langToggle">
+		</div>
+	</div>
+</nav>
+
+<div class="container">
+	<div class="jumbotron">
+		<h1>Jewellery Software</h1> 
+		<p>By Prajankya</p>
+	</div>
+	<p><button onclick="gotoAdd()" class="btn btn-primary">Add a {{New}} {{Article}}</button></p> 
+	<p>This is another text.</p> 
+</div>
+
+<script type="text/javascript">
+	angular
+		.module('app',[])
+		.controller("bodyController",['$scope', '$http', function($scope, $http){
+			window.scope = $scope;
+			window.http = $http;
+
+			l([{New:"New", Article:"Article"}]);
+
+			$(function(){
+				var toggle = $("#langToggle").bootstrapToggle({
+					on: 'English',
+						off: 'Marathi',
+						offstyle:"warning"
+				}).change(function() {
+					window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
+					l([window.obj]);
+					console.log("setting");
+					Cookies.set("my_lang_settings", window.scope.lang);
+					console.log(Cookies.get("my_lang_settings"));
+					//$('#console-event').html('Toggle: ' + $(this).prop('checked'))
+				});
+				var lang = Cookies.get("my_lang_settings");
+				if(lang){
+					window.scope.lang = lang;
+				}else{
+					if(!window.scope.lang){
+						toggle.bootstrapToggle("off");
+					}
+				}
+				
+				if(window.scope.lang == "eng"){
+					toggle.bootstrapToggle('on');
+				}
+				
+				//.console.log(window.scope.lang);
+				// data-toggle="toggle" data-on="English" data-off="Marathi"
+			});
+	}]);
+
+
+	function getL($scope, word){
+		return ($scope.lang=="mar")?getMar($scope.locale,word):word;
+	}
+	function getMar(ar, en){
+		for (var i = 0; i < ar.length; i++) {
+			if(ar[i].eng == en){
+				if(ar[i].mar){
+					return ar[i].mar;
+				}
+				return en;
+			}
+		}
+		return en;
+	}
+	function l(ar){
+		window.http
+			.get("/api/localize/")
+			.success( function(response) {
+				window.scope.locale = response;
+				var obj = ar[0];
+				window.obj = obj;
+				for (var key in obj) {
+					if (obj.hasOwnProperty(key)) {
+						window.scope[key]=getL(window.scope, obj[key]);
+					}
+				}
+				if(ar[1]){
+					ar[1]();
+				}
+			});
+	}
+
+	function gotoAdd(){
+		window.location.href = "/add";	
+	}	
 </script>
-  
-  
-<script type="text/ng-template" id="/articleDetails.html">
-  <h1>{{ article.name }}</h1>
-  completed: <input type="checkbox" ng-model="article.completed">
-  note: <textarea>{{ article.note }}</textarea>
-</script>
-
-
-  <script>
-    angular.module('app', ['ngRoute'])
-
-  .factory('Articles', ['$http', function($http){
-      return $http.get('/articles');
-  }])
-
-  .controller('ArticleController', ['$scope', 'Articles', function ($scope, Articles) {
-    $scope.articles = Articles;
-    
-    Articles.success(function(data){
-        $scope.articles = data;
-      }).error(function(data, status){
-        console.log(data, status);
-        $scope.articles = [];
-      });
-  }])
-  
-  .controller('ArticleDetailCtrl', ['$scope', '$routeParams', 'Articles', function ($scope, $routeParams, Articles) {
-    $scope.article = Articles[$routeParams.id];
-  }])
-  
-  .config(['$routeProvider', function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: '/articles.html',
-        controller: 'ArticleController'
-      })
-    
-      .when('/:id', {
-        templateUrl: '/articleDetails.html',
-        controller: 'ArticleDetailCtrl'
-     });
-  }]);
-  </script>
 </body>
 </html>
