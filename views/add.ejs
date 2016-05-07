@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html ng-app="app" ng-init = "lang='mar'">
   <head>
+  	<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %> Article</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-    -->
+    <link rel="stylesheet" href="/stylesheets/numpad.css" />
+	<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
+
+	<link href="/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+	
+    <script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
     <script src="/bower_components/angular/angular.js"></script>
     <script src="/bower_components/angular-route/angular-route.min.js"></script>
 	
-	<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
-    -->
-    <script src="/bower_components/angular-deckgrid/angular-deckgrid.js"></script>    
+	<script src="/bower_components/angular-deckgrid/angular-deckgrid.js"></script>    
     <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
-	<script src="/javascripts/jquery-1.11.2.min.js"></script>
+	<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
 
-	<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
-	<link rel="stylesheet" href="/stylesheets/numpad.css" />
-	<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
-	<!--<script src="javascripts/bootstrap.min.js" type="text/javascript"></script>-->
+	<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+	
 	<script src="/javascripts/numpad.js" type="text/javascript"></script>
-
+	
   </head>
 	<body>
-		<ng-include src="'/header.html'"></ng-include>
+		<nav class="navbar navbar-inverse ">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">S.S.S.</a>
+				</div>
+				<div class="nav navbar-nav navbar-right" style="padding: 10px;">
+					<input type="checkbox" id="langToggle">
+				</div>
+			</div>
+		</nav>
 		<ng-view></ng-view>
 		<script type="text/ng-template" id="/home.html">
-			<h1>Add Article</h1>
+			<h1>{{New}} {{Article}}</h1>
 			<center>
 				<h2>Select Metal:</h2>	
 				<table>
@@ -150,17 +159,79 @@ img{
 					</a>
 				</div>
 		</script>
-		<script type="text/ng-template" id="/add_info.html">		
+		<script type="text/ng-template" id="/add_info.html">
+			<div class="container">
+				<h2>{{New}} {{Article}} </h2>
+				<form class="form-horizontal" ng-submit="submitForm()" role="form">
+				<!-- method="post" action="/api/stock/">-->
+					<div class="row">
+						<div class="col-xs-10 col-lg-10">
+							<div class="form-group">
+			    				<label class="control-label	col-lg-2" for="metalTxt">Metal:</label>
+							    <div class="col-lg-10">
+									<input type="text" disabled="true" class="input-lg form-control" id="metalTxt" value="{{metal}}">
+								</div>
+			  				</div>
+			  				
+			  				<div class="form-group">
+			    				<label class="control-label col-lg-2" for="categoryTxt">Category:</label>
+							    <div class="col-lg-10">
+									<input type="text" disabled="true" class="input-lg form-control" id="categoryTxt" value="{{category_name}}">
+								</div>
+			  				</div>
+			  				
+			  				<div class="form-group">
+			    				<label class="control-label	col-lg-2" for="wagesTxt">{{wages}} : </label>
+							    <div class="col-lg-9">
+									<input type="text" name="wages" class="input-lg form-control" id="wagesTxt" value="0">
+								</div>
+								<span class="col-lg-1">
+									&#8377;<!--rupees-->
+								</span>
+			  				</div>
+			  				
+			  				<div class="form-group">
+			    				<label class="control-label	col-lg-2" for="weightTxt">{{Weight}} : </label>
+							    <div class="col-lg-9">
+									<input type="text" name="weight" class="input-lg form-control" id="weightTxt" value="0">
+								</div>
+								<span class="col-lg-1">
+								{{weight_unit}}
+								</span>
+			  				</div>
 
-			<h2>Metal : {{metal}}</h2>
-			<h2>Type : {{category_name}}</h2>
-			<img src="{{category_src}}"/>
-			<h2> {{wages}} : <input id="wages" ng-model="wage"/></h2>
-
+	  					</div>
+	  					<div class="col-xs-2 col-lg-2">
+	  						<img src="{{category_src}}" style="width: 90%" />
+	  					</div>
+	  				</div>
+	  				<input type="hidden" name="metal" value="{{metal_eng}}"></input>
+	  				<input type="hidden" name="category" value="{{category_id}}"></input>
+ 	  				<button type="submit" class="center-block btn btn-primary btn-lg">Submit</button>
+	  			</form>
+			</div>
+		
 		</script>
 		<script>
+			$(function(){
+				
+				var toggle = $("#langToggle").bootstrapToggle({
+					on: 'English',
+      				off: 'Marathi',
+      				offstyle:"warning"
+				}).change(function() {
+					window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
+					l([window.obj]);
+					//$('#console-event').html('Toggle: ' + $(this).prop('checked'))
+				});
+				if(window.scope.lang != "mar"){
+					toggle.bootstrapToggle('on');
+				}
+				//.console.log(window.scope.lang);
+				// data-toggle="toggle" data-on="English" data-off="Marathi"
+			});
 			function getL($scope, word){
-				return $scope.lang?getMar($scope.locale,word):word;
+				return ($scope.lang=="mar")?getMar($scope.locale,word):word;
 			}
 			function getMar(ar, en){
 				for (var i = 0; i < ar.length; i++) {
@@ -174,24 +245,26 @@ img{
 				return en;
 			}
 			function l(ar){
-				ar[0]
+				window.http
 					.get("/api/localize/")
 					.success( function(response) {
-						ar[1].locale = response;
-						var obj = ar[2];
+						window.scope.locale = response;
+						var obj = ar[0];
+						window.obj = obj;
 						for (var key in obj) {
 							if (obj.hasOwnProperty(key)) {
-								ar[1][key]=getL(ar[1],obj[key]);
+								window.scope[key]=getL(window.scope, obj[key]);
 							}
 						}
-						if(ar[3]){
-							ar[3]();
+						if(ar[1]){
+							ar[1]();
 						}
 					});
 			}
 	    	angular.module('app', [
 	    		'ngRoute',
-	    		'akoenig.deckgrid'
+	    		'akoenig.deckgrid',
+	    		'ui.bootstrap'
 	    	])
 	    	.config(['$routeProvider', function ($routeProvider) {
 			    $routeProvider
@@ -214,9 +287,13 @@ img{
 					
 			}])
 			.controller('homeController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
-				l([$http, $scope, {gold:"Gold", silver:"Silver"}]);
+				window.scope = $scope;
+				window.http = $http;
+				l([{gold:"Gold", silver:"Silver", New:"New", Article:"Article"}]);
 			}])
 			.controller('categoriesController', ['$http', '$scope', '$routeParams', function ($http, $scope, $routeParams) {
+				window.scope = $scope;
+				window.http = $http;
 				$http.get('/api/categories').success(function(data){
 	        		$scope.categories = data;
 	        		var obj = {};
@@ -224,7 +301,7 @@ img{
 	        			obj[data[i].name] = data[i].name;
 	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
 	        		}
-	        		l([$http, $scope, obj,function(){
+	        		l([obj,function(){
 						for (var i = data.length - 1; i >= 0; i--) {
 		        			$scope.categories[i].name = $scope[data[i].name];
 		        		}
@@ -235,16 +312,48 @@ img{
 	      		});
     		}])
 			.controller('add_infoController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
+				window.scope = $scope;
+				window.http = $http;
 				var a=($location.path().split("/"));
 				$http
 					.get("/api/categories/"+a[2])
 					.success(function(data){
+						$scope.metal_eng = a[1];
+						$scope.category_id = data._id;
 						$scope.category_src ="data:image/png;base64," + base64ArrayBuffer(data.image.data.data);;
-						l([$http, $scope, {metal:a[1], category_name: data.name, wages:"wages"}]);
+						l([{ metal:a[1], 
+							category_name: data.name, 
+							wages:"wages", 
+							weight_unit:"grams", 
+							New:"New", 
+							Article:"Article",
+							Weight:"Weight"
+						}]);
 						
 						$(function(){
-							$("#wages").numpad();
+							$("#wagesTxt").numpad();
+							$("#weightTxt").numpad();
 						});
+
+						$scope.submitForm = function() {
+				        // Posting data to php file
+				        $http({
+				          method  : 'POST',
+				          url     : '/api/stock',
+				          data    : $scope.user, //forms user object
+				          headers : {'Content-Type': 'application/x-www-form-urlencoded'} 
+				         })
+				          .success(function(data) {
+				            if (data.errors) {
+				              // Showing errors.
+				              $scope.errorName = data.errors.name;
+				              $scope.errorUserName = data.errors.username;
+				              $scope.errorEmail = data.errors.email;
+				            } else {
+				              $scope.message = data.message;
+				            }
+				          });
+				        };
 					});
 				
     		}]);

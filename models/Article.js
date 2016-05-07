@@ -27,8 +27,6 @@ var ArticleSchema = new mongoose.Schema({
 		type: Number,
 		required: true
 	},
-	completed: Boolean,
-	note: String,
 	added: {
 		type: Date,
 		default: Date.now

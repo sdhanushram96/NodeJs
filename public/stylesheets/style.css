@@ -1,7 +1,5 @@
 body {
-  padding: 10px;
-  padding-top: 40px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 22px "Lucida Grande", Helvetica, Arial, sans-serif!important;
   background: #f5f5f5;
   color: #4f4f4f;
 }
@@ -20,8 +18,4 @@ a {
 }
 .button:hover{
 	box-shadow: 2px 2px 4px #000;
-}
-input{
-	line-height: 2em;
-	font-size: 1em;
 }

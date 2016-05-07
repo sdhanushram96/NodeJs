@@ -96,7 +96,14 @@ router.put('/mar/:word', function(req, res, next) {
 		opts,
 		function(err, post) {
 			if (err) return next(err);
-			res.json(post);
+			if (post.n == 0) {
+				req.body.eng = req.params.word;
+				Localize.create(req.body, function(err, post2) {
+					res.json(post2);
+				});
+			} else {
+				res.json(post);
+			}
 		});
 });
 
