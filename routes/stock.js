@@ -27,8 +27,12 @@ router.get('/:id', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
 	req.body.drawer = "Stock";
+	console.log(req.body);
 	Article.create(req.body, function(err, post) {
-		if (err) return next(err);
+		if (err) {
+			console.log(err);
+			return next(err);
+		}
 		res.json(post);
 	});
 });

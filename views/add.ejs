@@ -183,7 +183,7 @@ img{
 			  				<div class="form-group">
 			    				<label class="control-label	col-lg-2" for="wagesTxt">{{wages}} : </label>
 							    <div class="col-lg-9">
-									<input type="text" name="wages" class="input-lg form-control" id="wagesTxt" value="0">
+									<input type="text" ng-model="wagesVal" name="wages" class="input-lg form-control" id="wagesTxt" value="0">
 								</div>
 								<span class="col-lg-1">
 									&#8377;<!--rupees-->
@@ -193,10 +193,10 @@ img{
 			  				<div class="form-group">
 			    				<label class="control-label	col-lg-2" for="weightTxt">{{Weight}} : </label>
 							    <div class="col-lg-9">
-									<input type="text" name="weight" class="input-lg form-control" id="weightTxt" value="0">
+									<input type="text" ng-model="weightVal" name="weight" class="input-lg form-control" id="weightTxt" value="0">
 								</div>
 								<span class="col-lg-1">
-								{{weight_unit}}
+									{{weight_unit}}
 								</span>
 			  				</div>
 
@@ -205,16 +205,14 @@ img{
 	  						<img src="{{category_src}}" style="width: 90%" />
 	  					</div>
 	  				</div>
-	  				<input type="hidden" name="metal" value="{{metal_eng}}"></input>
-	  				<input type="hidden" name="category" value="{{category_id}}"></input>
- 	  				<button type="submit" class="center-block btn btn-primary btn-lg">Submit</button>
+	  				<input type="hidden"  name="metal" value="{{metal_eng}}"></input>
+	  				<input type="hidden"  name="category" value="{{category_id}}"></input>
+ 	  				<button type="submit" id="sbt_btn" class="center-block btn btn-primary btn-lg">Submit</button>
 	  			</form>
 			</div>
-		
 		</script>
 		<script>
 			$(function(){
-				
 				var toggle = $("#langToggle").bootstrapToggle({
 					on: 'English',
       				off: 'Marathi',
@@ -314,6 +312,7 @@ img{
 			.controller('add_infoController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
 				window.scope = $scope;
 				window.http = $http;
+				$scope.article ={};
 				var a=($location.path().split("/"));
 				$http
 					.get("/api/categories/"+a[2])
@@ -331,31 +330,50 @@ img{
 						}]);
 						
 						$(function(){
+							$scope.weightVal = 0.0;
+							$scope.wagesVal = 0;
 							$("#wagesTxt").numpad();
 							$("#weightTxt").numpad();
 						});
-
 						$scope.submitForm = function() {
-				        // Posting data to php file
-				        $http({
-				          method  : 'POST',
-				          url     : '/api/stock',
-				          data    : $scope.user, //forms user object
-				          headers : {'Content-Type': 'application/x-www-form-urlencoded'} 
-				         })
-				          .success(function(data) {
-				            if (data.errors) {
-				              // Showing errors.
-				              $scope.errorName = data.errors.name;
-				              $scope.errorUserName = data.errors.username;
-				              $scope.errorEmail = data.errors.email;
-				            } else {
-				              $scope.message = data.message;
-				            }
-				          });
+
+							$("#sbt_btn").html("Adding...").attr("disabled","true");
+							var obj ={};
+							obj.weight = parseFloat($scope.weightVal);
+							obj.wages = parseFloat($scope.wagesVal);
+							obj.category = $scope.category_id;
+							obj.metal = $scope.metal_eng;
+							console.log(obj);
+							$.post("/api/stock", obj, function(s, r){
+								if(s._id){
+									$("#sbt_btn")
+						        		.removeClass("btn-primary")
+						        		.addClass("btn-success")
+						        		.html("Added Successfully....");
+						        	setTimeout(function(){
+						        		window.location.href = "/";
+						        	},1000);
+								}
+							});
+							/*
+					        $http({
+								method  : 'POST',
+					          	url     : '/api/stock/',
+					        	data    : obj,
+					        	headers : {'Content-Type': 'application/x-www-form-urlencoded'} 
+					        })
+					        .success(function(data) {
+					        	$("#sbt_btn")
+					        		.removeClass("btn-primary")
+					        		.addClass("btn-success")
+					        		.html("Added Successfully");
+								console.log(data);
+							})
+							.error(function(error){
+								console.log(error);
+							});*/
 				        };
 					});
-				
     		}]);
 
    function base64ArrayBuffer(arrayBuffer) {
