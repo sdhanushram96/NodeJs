@@ -62,13 +62,13 @@
 	  	<script type="text/ng-template" id="/categories.html">
 		  	<div class="container">
 					<div class="col-lg-2 pull-right">
-			  			<button onclick="window.location.href='#/addCategory'" class="btn btn-primary btn-md">Add {{New}} {{Category}}</button>
+			  			<button ng-click="onCat()" class="btn btn-primary btn-md">Add {{New}} {{Category}}</button>
 			  		</div>
 			  	
 		  		<h2>{{New}} {{metal}} {{Article}} {{Category}}:</h2>
 				<div ng-repeat="card in categories">
-					<a ng-href="/add/#/{{metal_eng}}/{{card._id}}">
-						<div class="btn {{btnClass}} col-xs-8 col-sm-4 col-md-2 col-lg-2">
+					<a ng-href="/add/#/{{metal_eng}}/{{card._id}}" >
+						<div class="btn {{btnClass}} col-xs-8 col-sm-4 col-md-2 col-lg-2" style="margin :5px;">
 		    				<h3>{{card.name}}</h3>
 		    				<img data-ng-src="data:image/png;base64,{{card.image}}" style="width: 100%"/>
 						</div>
@@ -77,7 +77,7 @@
 		</script>
 	  	<script type="text/ng-template" id="/add_category.html">
 			<div class="container">
-				<h2>{{New}} Category</h2>
+				<h2>{{New}} {{metal}} Category</h2>
 				<form class="form-horizontal" ng-submit="submitForm()" role="form">
 				<!-- method="post" action="/api/stock/">-->
 					<div class="form-group">
@@ -225,11 +225,10 @@
 				}
 
 				window.scope.$watch('lang', function() {
-				if(window.scope.lang){
-					window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
-				}
-
-			});
+					if(window.scope.lang){
+						window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
+					}
+				});
 			});
 			function getL($scope, word){
 				return ($scope.lang=="mar")?getMar($scope.locale,word):word;
@@ -280,7 +279,11 @@
 						templateUrl: '/categories.html',
 						controller: 'categoriesController'
 			      	})
-			      	.when('/addCategory', {
+			      	.when('/Gold/addCategory', {
+						templateUrl: '/add_category.html',
+						controller: 'add_categoryController'
+			      	})
+			      	.when('/Silver/addCategory', {
 						templateUrl: '/add_category.html',
 						controller: 'add_categoryController'
 			      	})
@@ -309,7 +312,6 @@
 				if(window.scope.lang != lang){
 					window.scope.lang = lang;
 				}
-				
 				$scope.$watch('lang', function() {
 					if(window.obj){
 						l([window.obj,function(){
@@ -330,6 +332,11 @@
 				$scope.metal_eng = a[1];
 				$scope.btnClass = "btn-"+((a[1] == "Gold")?"warning":"default");
 				
+				$scope.onCat = function (){
+					window.location.href='#/'+$scope.metal_eng+'/addCategory';
+				}
+				
+
 				$http.get('/api/categories/'+a[1]).success(function(data){
 	        		$scope.categories = data;
 	        		var obj = {};
@@ -338,7 +345,7 @@
 	        		obj.Article = "Article";
 	        		obj.Category = "Category";
 	        		window.data_data = [];
-	        		for (var i = data.length - 1; i >= 0; i--) {
+	        		for (var i = 0; i < data.length; i++) {
 	        			obj[data[i].name] = data[i].name;
 	        			window.data_data.push(data[i].name);
 	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
@@ -357,10 +364,17 @@
 	        		$scope.categories = [];
 	      		});
     		}])
-			.controller('add_categoryController', ['$scope', '$http', function($scope, $http) {
+			.controller('add_categoryController', ['$scope', '$http', '$location', function($scope, $http, $location) {
 				window.scope = $scope;
 				window.http = $http;
-				l([{New:"New",Category:"Category"}]);
+
+				var a=($location.path().split("/"));
+
+				$scope.metal = a[1];
+				$scope.metal_eng = a[1];
+				
+
+				l([{New:"New", Category:"Category", metal:a[1]}]);
 				var lang = Cookies.get("my_lang_settings");
 				if(window.scope.lang != lang){
 					window.scope.lang = lang;
@@ -374,6 +388,7 @@
 					data_uri = data_uri.substring(data_uri.indexOf(",") + 1);
 					var obj = {name : eng};
 					obj.image = {};
+					obj.metal = $scope.metal_eng;
 					obj.image.contentType = window.mime;
 					obj.image.data = data_uri;
 					//obj = JSON.stringify(obj);

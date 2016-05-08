@@ -13,8 +13,8 @@ var categories = require('./routes/categories');
 
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery', function(err) {
-  //mongoose.connect('mongodb://localhost/jewel', function(err) {
+//mongoose.connect('mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery', function(err) {
+mongoose.connect('mongodb://localhost/jewel', function(err) {
   if (err) {
     console.log('connection error', err);
   } else {
@@ -32,8 +32,11 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '50mb'
+}));
 app.use(bodyParser.urlencoded({
+  limit: '50mb',
   extended: false
 }));
 app.use(cookieParser());

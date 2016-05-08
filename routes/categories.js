@@ -47,9 +47,9 @@ router.get('/:id', function(req, res, next) {
 router.post('/', function(req, res, next) {
 	//console.log(req.body);
 	var b = new Buffer(req.body.image.data, "base64");
-	console.log(b);
 	Category.create({
 		name: req.body.name,
+		metal: req.body.metal,
 		image: {
 			data: b,
 			contentType: req.body.image.contentType
