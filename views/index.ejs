@@ -32,8 +32,10 @@
 				<h1>Jewellery Software</h1> 
 				<p>By Prajankya</p>
 			</div>
-			<p><button onclick="gotoAdd()" class="btn btn-primary btn-lg">{{New}} {{Article}}</button></p> 
-			<p>This is another text.</p> 
+			<button onclick="gotoAdd()" class="btn btn-primary btn-lg">{{New}} {{Article}}</button>
+			<button onclick="gotoStock()" class="btn btn-primary btn-lg">Stock</button>
+
+			
 		</div>
 
 		<script type="text/javascript">
@@ -80,7 +82,12 @@
 
 			function gotoAdd(){
 				window.location.href = "/add";	
-			}	
+			}
+
+			function gotoStock(){
+				window.location.href = "/stock";
+			}
+
 		</script>
 	</body>
 </html>

@@ -90,12 +90,21 @@
 						wages 		: "wages",
 						weight_unit : "grams", 
 						Weight 		: "Weight"
+					},function(){
+						console.log(window.names);
 					}]);
 					
 					$scope.$watch('lang', function() {
+						if(window.scope.lang != $scope.lang){
+							window.scope.lang = $scope.lang;
+						}
 						if(window.scope.lang){
 							window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
+							for (var i = 0; i < $scope.articles.length; i++) {
+								$scope.articles[i].category_name = getL($scope, window.names[i]);
+							}
 						}
+
 					});
 
 					$(function(){
@@ -104,7 +113,7 @@
 							off: 'Marathi',
 							offstyle:"warning"
 						}).change(function() {
-							window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
+							$scope.lang = $(this).prop('checked') ? "eng" : "mar";
 							l([window.obj]);
 							Cookies.set("my_lang_settings", window.scope.lang);
 						});
@@ -116,7 +125,6 @@
 								window.toggle.bootstrapToggle("off");
 							}
 						}
-						
 						if(window.scope.lang == "eng"){
 							window.toggle.bootstrapToggle('on');
 						}
@@ -125,27 +133,27 @@
 					$http
 						.get("/api/stock/")
 						.success(function(articles) {
-							//for(var i =0; i < response.length; i++){
-								angular.forEach(articles, function(article){
-									$http
-										.get("/api/categories/"+article.category)
-										.success(function(category){
-											var obj = {};
-											var dt = new Date(article.added);
-											 
-											obj.weight = article.weight;
-											obj.metal = article.metal;
-											obj.added = dt.format("h:MM:ss tt  d-mmm-yy");
-											obj.wages = article.wages;
-											obj.category_name = category.name;
-											obj.category_src = base64ArrayBuffer(category.image.data.data);
-											obj.bgClass = "list-group-item-"+((article.metal == "Gold")?"warning":"info");
-											$scope.articles.push(obj);
-										});
-								});
-							//}
-							//$scope.stock = response;
-							//console.log($scope.stock);
+							window.names = [];
+
+							angular.forEach(articles, function(article){
+								$http
+									.get("/api/categories/"+article.category)
+									.success(function(category){
+										var myObj = {};
+										var dt = new Date(article.added);
+										 
+										myObj.weight = article.weight;
+										myObj.metal = article.metal;
+										myObj.added = dt.format("h:MM:ss tt d-mmm-yy");
+										myObj.wages = article.wages;
+										window.names.push(category.name);
+										myObj.metal = article.metal;
+										myObj.category_name = getL($scope, category.name);
+										myObj.category_src = base64ArrayBuffer(category.image.data.data);
+										myObj.bgClass = "list-group-item-"+((article.metal == "Gold")?"warning":"info");
+										$scope.articles.push(myObj);
+									});
+							});
 					});
 			}]);
 		</script>
