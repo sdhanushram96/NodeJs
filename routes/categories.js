@@ -13,6 +13,27 @@ router.get('/', function(req, res, next) {
 		});
 });
 
+router.get('/Gold', function(req, res, next) {
+	Category
+		.find()
+		.where("metal").equals("Gold")
+		.exec(function(err, categories) {
+			if (err) return next(err);
+			res.json(categories);
+		});
+});
+
+router.get('/Silver', function(req, res, next) {
+	Category
+		.find()
+		.where("metal").equals("Silver")
+		.exec(function(err, categories) {
+			if (err) return next(err);
+			res.json(categories);
+		});
+});
+
+
 router.get('/:id', function(req, res, next) {
 	Category.findById(req.params.id, function(err, doc) {
 		if (err) return next(err);

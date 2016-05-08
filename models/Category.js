@@ -5,6 +5,11 @@ var CategorySchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	metal: {
+		type: String,
+		enum: ['Gold', 'Silver'],
+		required: [true, 'Which metal ?']
+	},
 	image: {
 		data: Buffer,
 		contentType: String

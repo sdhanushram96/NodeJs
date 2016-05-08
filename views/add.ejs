@@ -70,7 +70,7 @@
 			</center>
 	  	</script>
 	  	
-	  	<script type="text/ng-template" id="/categories_silver.html">
+	  	<script type="text/ng-template" id="/categories.html">
 		  	<style type="text/css">
 img{
 	width: 80%;
@@ -348,11 +348,11 @@ img{
 			        	controller: 'homeController'
 			      	})
 			      	.when('/Gold', {
-						templateUrl: '/categories_gold.html',
+						templateUrl: '/categories.html',
 						controller: 'categoriesController'
 			      	})
 			      	.when('/Silver', {
-						templateUrl: '/categories_silver.html',
+						templateUrl: '/categories.html',
 						controller: 'categoriesController'
 			      	})
 			      	.when('/addCategory', {
@@ -370,10 +370,15 @@ img{
 				window.http = $http;
 				l([{gold:"Gold", silver:"Silver", New:"New", Article:"Article"}]);
 			}])
-			.controller('categoriesController', ['$http', '$scope', '$routeParams', function ($http, $scope, $routeParams) {
+			.controller('categoriesController', ['$http', '$scope', '$routeParams', '$location', function ($http, $scope, $routeParams, $location) {
 				window.scope = $scope;
 				window.http = $http;
-				$http.get('/api/categories').success(function(data){
+				
+				var a=($location.path().split("/"));
+
+				$scope.metal = a[1];
+				
+				$http.get('/api/categories/'+a[1]).success(function(data){
 	        		$scope.categories = data;
 	        		var obj = {};
 	        		for (var i = data.length - 1; i >= 0; i--) {
@@ -433,7 +438,7 @@ img{
 			.controller('add_infoController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
 				window.scope = $scope;
 				window.http = $http;
-				$scope.article ={};
+				
 				var a=($location.path().split("/"));
 				$http
 					.get("/api/categories/"+a[2])
