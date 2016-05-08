@@ -25,7 +25,16 @@
 
 		<nav class="navbar navbar-inverse ">
 			<div class="container-fluid">
-				<button class=" btn" style="margin-top:8px;" onclick="window.history.back();"><b>&#8678;</b> Back</button>		
+				<div class="navbar-header">
+	      			<button class=" btn" style="margin-top:8px;" onclick="window.history.back();">
+						<b>&#8678;</b> Back
+					</button>
+					
+      				<span style="color: white;
+      				font-size:24px;position:relative;top:8px;left:20px;">
+      					Stock
+      				</span>
+    			</div>
 				<div class="nav navbar-nav navbar-right" style="padding: 10px;">
 					<input type="checkbox" id="langToggle">
 				</div>
@@ -34,10 +43,34 @@
 
 
 		<div class="container">
-			<h2>Stock</h2>
-			<div>filter bar</div>
+			<div class="well form-inline row">
+				<div class="col-sm-4">
+					<label class="control-label">Search:</label>
+					<input class="form-control input-md" ng-model="cat"/>
+				</div>
+				<div class="col-sm-4">
+					<!--<label class="control-label">Gold:</label>
+					<input class="form-control" type="checkbox" ng-model="search.metal"/>-->
+					<!--<label class="checkbox-label"><input type="checkbox" value=""> Gold</label>-->
+					<label>
+						<input type="checkbox"
+							ng-model='search.metal2' 
+							ng-false-value='"Silver"' 
+							ng-true-value='' />
+								Gold
+       				</label>
+       				<label>
+	       				<input type="checkbox"
+							ng-model='search.metal1' 
+							ng-false-value='"Gold"' 
+							ng-true-value='' />
+								Silver
+       				</label>
+
+				</div>
+			</div>
 			
-			<ul class="list-group" ng-repeat="article in articles">
+			<ul class="list-group" ng-repeat="article in articles | filter:cat | filter:search.metal1 | filter:search.metal2">
   				<li class="list-group-item {{article.bgClass}}">
   					<div class="row">
 						<img class="col-lg-2 col-sm-2" data-ng-src="data:image/png;base64,{{article.category_src}}"/>
@@ -62,7 +95,7 @@
 								<div class="col-lg-8 col-sm-8">
 									<div class="row">
 										<div class="col-lg-4 col-sm-4">Metal :</div>
-										<div class="col-lg-8 col-sm-8"><b>{{metal}}</b></div>
+										<div class="col-lg-8 col-sm-8"><b>{{article.metal}}</b></div>
 									</div>
 									<div class="row">
 										<div class="col-lg-3 col-sm-3">Added on :</div>
