@@ -28,14 +28,22 @@
 		</style>
   	</head>
 	<body>
-		<nav class="navbar navbar-inverse ">
+		
+		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
-				<button class=" btn" style="margin-top:8px;" onclick="window.history.back();"><b>&#8678;</b> Back</button>		
+				<div class="navbar-header">
+	      			<button class=" btn" style="margin-top:8px;" onclick="window.history.back();">
+						<b>&#8678;</b> Back
+					</button>
+				</div>
 				<div class="nav navbar-nav navbar-right" style="padding: 10px;">
 					<input type="checkbox" id="langToggle">
 				</div>
 			</div>
 		</nav>
+		<br>
+		<br>
+		
 		<ng-view></ng-view>
 		<script type="text/ng-template" id="/home.html">
 			<div class="container">
