@@ -71,96 +71,18 @@
 	  	</script>
 	  	
 	  	<script type="text/ng-template" id="/categories.html">
-		  	<style type="text/css">
-img{
-	width: 80%;
-}
-.deckgrid .column-1-1 {
-	width: 100%;
-}
-
-
-.deckgrid[deckgrid]::before {
-	/* Specifies that the grid should have a maximum of 4 columns. Each column will have the classes 'column' and 'column-1-4' */
-	content: '6 .column.column-1-6';
-	font-size: 0; /* See https://github.com/akoenig/angular-deckgrid/issues/14#issuecomment-35728861 */
-	visibility: hidden;
-}
-
-.deckgrid .column {
-	float: left;
-}
-
-.deckgrid .column-1-6 {
-	width: 16.66%;
-}
-
-@media screen and (max-width: 480px){
-	.deckgrid[deckgrid]::before {
-		content: '1 .column.column-1-1';
-	}
-}
-</style>
-
-    
-			<h1>Add Silver Article to Stock</h1>
-			<center>
-				<h2>Select Category:</h2>
-				
-				<div deckgrid class="deckgrid" source="categories">
-				<a ng-href="/add/#/Silver/{{card._id}}">
-					<div class="a-card button">
-	    				<h3>{{card.name}}</h3>
-	    				<img src="" data-ng-src="data:image/png;base64,{{card.image}}"/>
-					</div>
+		  	<div class="container">
+				<h2>{{New}} {{metal}} {{Article}} {{Type}}:</h2>
+				<div ng-repeat="card in categories">
+					<a ng-href="/add/#/{{metal}}/{{card._id}}">
+						<div class="btn {{btnClass}} col-xs-8 col-sm-4 col-md-2 col-lg-2">
+		    				<h3>{{card.name}}</h3>
+		    				<img data-ng-src="data:image/png;base64,{{card.image}}" style="width: 100%"/>
+						</div>
 					</a>
 				</div>
 		</script>
-	  	<script type="text/ng-template" id="/categories_gold.html">
-		  	<style type="text/css">
-img{
-	width: 80%;
-}
-.deckgrid .column-1-1 {
-	width: 100%;
-}
-
-
-.deckgrid[deckgrid]::before {
-	/* Specifies that the grid should have a maximum of 4 columns. Each column will have the classes 'column' and 'column-1-4' */
-	content: '6 .column.column-1-6';
-	font-size: 0; /* See https://github.com/akoenig/angular-deckgrid/issues/14#issuecomment-35728861 */
-	visibility: hidden;
-}
-
-.deckgrid .column {
-	float: left;
-}
-
-.deckgrid .column-1-6 {
-	width: 16.66%;
-}
-
-@media screen and (max-width: 480px){
-	.deckgrid[deckgrid]::before {
-		content: '1 .column.column-1-1';
-	}
-}
-</style>
-			<h1>Add Gold Article to Stock</h1>
-			<center>
-				<h2>Select Category:</h2>
-				
-				<div deckgrid class="deckgrid" source="categories">
-				<a ng-href="/add/#/Gold/{{card._id}}">
-					<div class="a-card button">
-	    				<h3>{{card.name}}</h3>
-	    				<img src="" data-ng-src="data:image/png;base64,{{card.image}}"/>
-					</div>
-					</a>
-				</div>
-		</script>
-		<script type="text/ng-template" id="/add_category.html">
+	  	<script type="text/ng-template" id="/add_category.html">
 			<div class="container">
 				<h2>{{New}} Type</h2>
 				<form class="form-horizontal" ng-submit="submitForm()" role="form">
@@ -377,10 +299,16 @@ img{
 				var a=($location.path().split("/"));
 
 				$scope.metal = a[1];
+
+				$scope.btnClass = "btn-"+((a[1] == "Gold")?"warning":"default");
 				
 				$http.get('/api/categories/'+a[1]).success(function(data){
 	        		$scope.categories = data;
 	        		var obj = {};
+	        		obj.metal = a[1];
+	        		obj.New = "New";
+	        		obj.Article = "Article";
+	        		obj.Type = "Type";
 	        		for (var i = data.length - 1; i >= 0; i--) {
 	        			obj[data[i].name] = data[i].name;
 	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
