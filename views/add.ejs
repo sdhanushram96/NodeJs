@@ -215,6 +215,7 @@
 					Cookies.set("my_lang_settings", window.scope.lang);
 				});
 				var lang = Cookies.get("my_lang_settings");
+
 				if(lang){
 					window.scope.lang = lang;
 				}else{
@@ -294,6 +295,21 @@
 				window.scope = $scope;
 				window.http = $http;
 				
+				$scope.$watch('lang', function() {
+					//console.log(window.data_data);
+					if(window.obj){
+						l([window.obj,function(){
+							if(window.data_data){
+								for (var i = 0; i < window.data_data.length; i++) {
+									if(window.scope[window.data_data[i]]){
+										$scope.categories[i].name = window.scope[window.data_data[i]];
+									}
+								}
+							}
+						}]);
+					}
+				});
+
 				var a=($location.path().split("/"));
 
 				$scope.metal = a[1];
@@ -307,10 +323,17 @@
 	        		obj.New = "New";
 	        		obj.Article = "Article";
 	        		obj.Type = "Type";
+	        		window.data_data = [];
 	        		for (var i = data.length - 1; i >= 0; i--) {
 	        			obj[data[i].name] = data[i].name;
+	        			window.data_data.push(data[i].name);
 	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
 	        		}
+	        		var lang = Cookies.get("my_lang_settings");
+					
+					if(lang){
+						window.scope.lang = lang;
+					}
 	        		l([obj,function(){
 						for (var i = data.length - 1; i >= 0; i--) {
 		        			$scope.categories[i].name = $scope[data[i].name];

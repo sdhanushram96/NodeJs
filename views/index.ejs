@@ -54,9 +54,7 @@
 				}).change(function() {
 					window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
 					l([window.obj]);
-					console.log("setting");
 					Cookies.set("my_lang_settings", window.scope.lang);
-					console.log(Cookies.get("my_lang_settings"));
 					//$('#console-event').html('Toggle: ' + $(this).prop('checked'))
 				});
 				var lang = Cookies.get("my_lang_settings");
