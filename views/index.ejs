@@ -45,33 +45,37 @@
 			window.http = $http;
 
 			l([{New:"New", Article:"Article"}]);
+			
+			$scope.$watch('lang', function() {
+				if(window.scope.lang){
+					window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
+					
+				}
+			});
 
 			$(function(){
-				var toggle = $("#langToggle").bootstrapToggle({
+				window.toggle = $("#langToggle").bootstrapToggle({
 					on: 'English',
-						off: 'Marathi',
-						offstyle:"warning"
+					off: 'Marathi',
+					offstyle:"warning"
 				}).change(function() {
 					window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
 					l([window.obj]);
 					Cookies.set("my_lang_settings", window.scope.lang);
-					//$('#console-event').html('Toggle: ' + $(this).prop('checked'))
+					
 				});
 				var lang = Cookies.get("my_lang_settings");
 				if(lang){
 					window.scope.lang = lang;
 				}else{
 					if(!window.scope.lang){
-						toggle.bootstrapToggle("off");
+						window.toggle.bootstrapToggle("off");
 					}
 				}
 				
 				if(window.scope.lang == "eng"){
-					toggle.bootstrapToggle('on');
+					window.toggle.bootstrapToggle('on');
 				}
-				
-				//.console.log(window.scope.lang);
-				// data-toggle="toggle" data-on="English" data-off="Marathi"
 			});
 	}]);
 
