@@ -160,6 +160,76 @@ img{
 					</a>
 				</div>
 		</script>
+		<script type="text/ng-template" id="/add_category.html">
+			<div class="container">
+				<h2>{{New}} Type</h2>
+				<form class="form-horizontal" ng-submit="submitForm()" role="form">
+				<!-- method="post" action="/api/stock/">-->
+					<div class="form-group">
+	    				<label class="control-label	col-lg-3" for="metalTxt">English Name:</label>
+					    <div class="col-lg-9">
+							<input type="text" ng-model="engVal" required="true" class="input-lg form-control" id="engTxt">
+						</div>
+	  				</div>
+	  				<div class="form-group">
+	    				<label class="control-label	col-lg-3" for="metalTxt">Marathi Name:</label>
+					    <div class="col-lg-9">
+							<input type="text" ng-model="marVal" class="input-lg form-control" id="marTxt">
+						</div>
+	  				</div>
+	  				<div id="img_grp" class="form-group">
+	    				<label class="control-label	col-lg-3" for="metalTxt">Image file:</label>
+					    <div class="col-lg-9">
+							<input type="file" required="true"  ng-model="imageVal" class="has-feedback input-lg form-control" id="imgTxt">
+						</div>
+						<span class="hide" id="img_err_msg">Please select a Valid Image</span>
+	  				</div>
+	  				<!--<input type="hidden" ng-model="image_dataURI" id="image_uri" value=""></input>-->
+	  				<div class="row">
+	  					<img id="img_place" class="col-lg-3">
+	  					<button type="submit" id="sbt_btn" class="center-block btn btn-primary btn-lg">Upload</button>
+	  				</div>
+			  	</form>
+			</div>
+			<script>
+				function EL(id) { return document.getElementById(id); } // Get el by ID helper function
+
+				function readFile() {
+				  if (this.files && this.files[0]) {
+				    var FR= new FileReader();
+				    FR.onload = function(e) {
+					    $("#img_place").attr("src",e.target.result);
+						window.image_uri = (e.target.result);
+						window.mime = base64MimeType(e.target.result);
+						if(window.mime.split("/")[0] != "image"){
+							$("#img_grp")
+								.addClass("has-error")
+								.removeClass("has-success");
+							$("#img_err_msg")
+								.removeClass("hide");
+							$("#imgTxt").val("");
+						}else{
+							$("#img_grp")
+								.removeClass("has-error")
+								.addClass("has-success");
+							$("#img_err_msg")
+								.addClass("hide");
+						}
+				    };       
+				    FR.readAsDataURL(this.files[0]);
+				  }
+				}
+				function base64MimeType(encoded) {
+				  if (!encoded) return;
+				  var mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+
+				  if (mime && mime.length) return mime[1];
+				}
+				EL("imgTxt").addEventListener("change", readFile, false);
+			</script>
+		</script>
+
+
 		<script type="text/ng-template" id="/add_info.html">
 			<div class="container">
 				<h2>{{New}} {{Article}} </h2>
@@ -221,10 +291,7 @@ img{
 				}).change(function() {
 					window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
 					l([window.obj]);
-					console.log("setting");
 					Cookies.set("my_lang_settings", window.scope.lang);
-					console.log(Cookies.get("my_lang_settings"));
-					//$('#console-event').html('Toggle: ' + $(this).prop('checked'))
 				});
 				var lang = Cookies.get("my_lang_settings");
 				if(lang){
@@ -234,13 +301,9 @@ img{
 						toggle.bootstrapToggle("off");
 					}
 				}
-				
 				if(window.scope.lang == "eng"){
 					toggle.bootstrapToggle('on');
 				}
-				
-				//.console.log(window.scope.lang);
-				// data-toggle="toggle" data-on="English" data-off="Marathi"
 			});
 			function getL($scope, word){
 				return ($scope.lang=="mar")?getMar($scope.locale,word):word;
@@ -292,6 +355,10 @@ img{
 						templateUrl: '/categories_silver.html',
 						controller: 'categoriesController'
 			      	})
+			      	.when('/addCategory', {
+						templateUrl: '/add_category.html',
+						controller: 'add_categoryController'
+			      	})
 			      	.otherwise({
 						templateUrl: '/add_info.html',
 						controller: 'add_infoController'
@@ -319,10 +386,50 @@ img{
 		        		}
 	        		}]);
 	      		}).error(function(data, status){
-	        		console.log(data, status);
 	        		$scope.categories = [];
 	      		});
     		}])
+			.controller('add_categoryController', ['$scope', '$http', function($scope, $http) {
+				window.scope = $scope;
+				window.http = $http;
+				$scope.submitForm = function() {
+					$("#sbt_btn").html("Uploading...").attr("disabled","true");
+					var eng = $scope.engVal;
+					var mar = $scope.marVal;
+					var data_uri = window.image_uri;
+					data_uri = data_uri.substring(data_uri.indexOf(",") + 1);
+					var obj = {name : eng};
+					obj.image = {};
+					obj.image.contentType = window.mime;
+					obj.image.data = data_uri;
+					//obj = JSON.stringify(obj);
+					$.ajax({
+						url: '/api/categories',
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify(obj),
+						dataType: 'json'
+					}).done(function(data) {
+						
+						$.ajax({
+							url: "/api/localize/mar/"+eng,
+							type: 'PUT',
+							data: JSON.stringify({mar:mar}),
+							contentType: "application/json",
+							success: function(){
+								$("#sbt_btn")
+					        		.removeClass("btn-primary")
+					        		.addClass("btn-success")
+					        		.html("Uploaded Successfully....");
+					        	setTimeout(function(){
+					        		window.location.href = "/";
+					        	},1000);
+							}
+						});
+					}).fail(function(data) {
+					});
+				};
+			}])
 			.controller('add_infoController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
 				window.scope = $scope;
 				window.http = $http;
@@ -357,7 +464,6 @@ img{
 							obj.wages = parseFloat($scope.wagesVal);
 							obj.category = $scope.category_id;
 							obj.metal = $scope.metal_eng;
-							console.log(obj);
 							$.post("/api/stock", obj, function(s, r){
 								if(s._id){
 									$("#sbt_btn")
@@ -369,23 +475,6 @@ img{
 						        	},1000);
 								}
 							});
-							/*
-					        $http({
-								method  : 'POST',
-					          	url     : '/api/stock/',
-					        	data    : obj,
-					        	headers : {'Content-Type': 'application/x-www-form-urlencoded'} 
-					        })
-					        .success(function(data) {
-					        	$("#sbt_btn")
-					        		.removeClass("btn-primary")
-					        		.addClass("btn-success")
-					        		.html("Added Successfully");
-								console.log(data);
-							})
-							.error(function(error){
-								console.log(error);
-							});*/
 				        };
 					});
     		}]);

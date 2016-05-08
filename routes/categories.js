@@ -22,26 +22,37 @@ router.get('/:id', function(req, res, next) {
 	});
 });
 
-/*
+
 router.post('/', function(req, res, next) {
-/	Category.create(req.body, function(err, post) {
+	//console.log(req.body);
+	var b = new Buffer(req.body.image.data, "base64");
+	console.log(b);
+	Category.create({
+		name: req.body.name,
+		image: {
+			data: b,
+			contentType: req.body.image.contentType
+		}
+	}, function(err, post) {
 		if (err) return next(err);
 		res.json(post);
 	});
-/
-
-/
+});
+/*
+			/
 
 var fs = require('fs');
-var Category = require('./models/Category.js');
+var Category = require('./models / Category.js ');
 var a = new Category;
 a.name = "wedding ring";
 a.image.data = fs.readFileSync("./a.png");
-a.image.contentType = 'image/png';
+a.image.contentType = '
+		image / png ';
 a.save(function(err, a) {
-  if (err) throw err;
-  console.error('saved img to mongo');
-  console.log(a);
+	if (err) throw err;
+	console.error('
+		saved img to mongo ');
+	console.log(a);
 });
 /
 
