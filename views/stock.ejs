@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html ng-app="app">
+	<head>
+		<title>Jewellery Software</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
+		<link href="/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+
+		<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
+		<script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
+		<script src="/bower_components/angular/angular.js"></script>
+		<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+
+		<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+		<script src="/javascripts/includes.js" type="text/javascript"></script>
+		<script src="/javascripts/date.format.js" type="text/javascript"></script>
+		<style type="text/css">
+			body {
+			   font-size: 20px;
+			}
+		</style>
+	</head>
+	<body ng-controller="bodyController">
+
+		<nav class="navbar navbar-inverse ">
+			<div class="container-fluid">
+				<button class=" btn" style="margin-top:8px;" onclick="window.history.back();"><b>&#8678;</b> Back</button>		
+				<div class="nav navbar-nav navbar-right" style="padding: 10px;">
+					<input type="checkbox" id="langToggle">
+				</div>
+			</div>
+		</nav>		
+
+
+		<div class="container">
+			<h2>Stock</h2>
+			<div>filter bar</div>
+			
+			<ul class="list-group" ng-repeat="article in articles">
+  				<li class="list-group-item {{article.bgClass}}">
+  					<div class="row">
+						<img class="col-lg-2 col-sm-2" data-ng-src="data:image/png;base64,{{article.category_src}}"/>
+						<div class="col-lg-10 col-sm-10">
+							<div class="row">
+								<h3>{{article.category_name}}</h3>
+							</div>
+							<div class="row">
+								<div class="col-lg-3 col-sm-3">
+									<div class="row">
+										<div class="col-lg-5 col-sm-5">{{Weight}}</div>
+										<div class="col-lg-5 col-sm-5"><b>{{article.weight}}</b></div>
+										<div class="col-lg-2 col-sm-2">{{weight_unit}}</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-5 col-sm-5">{{wages}}</div>
+										<div class="col-lg-5 col-sm-5"><b>{{article.wages}}</b></div>
+										<div class="col-lg-2 col-sm-2">&#8377;<!--rupees--></div>
+									</div>
+								</div>
+								<div class="col-lg-1 col-sm-1"></div>
+								<div class="col-lg-8 col-sm-8">
+									<div class="row">
+										<div class="col-lg-4 col-sm-4">Metal :</div>
+										<div class="col-lg-8 col-sm-8"><b>{{metal}}</b></div>
+									</div>
+									<div class="row">
+										<div class="col-lg-3 col-sm-3">Added on :</div>
+										<div class="col-lg-9 col-sm-9"><b>{{article.added}}</b></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+  				</li>
+			</ul>
+		</div>
+
+		<script type="text/javascript">
+			angular
+				.module('app',[])
+				.controller("bodyController",['$scope', '$http', function($scope, $http){
+					window.scope = $scope;
+					window.http = $http;
+
+					l([{
+						New			: "New",
+						Article 	: "Article",
+						Category 	: "Category",
+						wages 		: "wages",
+						weight_unit : "grams", 
+						Weight 		: "Weight"
+					}]);
+					
+					$scope.$watch('lang', function() {
+						if(window.scope.lang){
+							window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
+						}
+					});
+
+					$(function(){
+						window.toggle = $("#langToggle").bootstrapToggle({
+							on: 'English',
+							off: 'Marathi',
+							offstyle:"warning"
+						}).change(function() {
+							window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
+							l([window.obj]);
+							Cookies.set("my_lang_settings", window.scope.lang);
+						});
+						var lang = Cookies.get("my_lang_settings");
+						if(lang){
+							window.scope.lang = lang;
+						}else{
+							if(!window.scope.lang){
+								window.toggle.bootstrapToggle("off");
+							}
+						}
+						
+						if(window.scope.lang == "eng"){
+							window.toggle.bootstrapToggle('on');
+						}
+					});
+					$scope.articles = [];
+					$http
+						.get("/api/stock/")
+						.success(function(articles) {
+							//for(var i =0; i < response.length; i++){
+								angular.forEach(articles, function(article){
+									$http
+										.get("/api/categories/"+article.category)
+										.success(function(category){
+											var obj = {};
+											var dt = new Date(article.added);
+											 
+											obj.weight = article.weight;
+											obj.metal = article.metal;
+											obj.added = dt.format("h:MM:ss tt  d-mmm-yy");
+											obj.wages = article.wages;
+											obj.category_name = category.name;
+											obj.category_src = base64ArrayBuffer(category.image.data.data);
+											obj.bgClass = "list-group-item-"+((article.metal == "Gold")?"warning":"info");
+											$scope.articles.push(obj);
+										});
+								});
+							//}
+							//$scope.stock = response;
+							//console.log($scope.stock);
+					});
+			}]);
+		</script>
+	</body>
+</html>
