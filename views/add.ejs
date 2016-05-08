@@ -34,21 +34,21 @@
 			<div class="container">
 				<h2>{{New}} {{Article}} :</h2>
 				<div class="row">
-					<div class="col-lg-2">
+					<div class="col-lg-2 col-md-0 col-sm-0">
 					</div>
-					<div class = "col-lg-8">
-						<div class="btn btn-warning col-lg-5" onclick="window.location.href='#/Gold'">
+					<div class = "col-lg-8 col-md-12 col-sm-12">
+						<div class="btn btn-warning col-md-5 col-sm-5 col-lg-5" onclick="window.location.href='#/Gold'">
 							<img src="../images/gold.png"/>
 							<h2>{{gold}}</h2>
 						</div>
-						<div class="col-lg-2">
+						<div class="col-lg-2 col-md-2  col-sm-2">
 						</div>
-						<div class="col-lg-5 btn btn-info" onclick="window.location.href='#/Silver'">
+						<div class="col-lg-5 col-md-5 btn col-sm-5 btn-info" onclick="window.location.href='#/Silver'">
 							<img src="../images/silver.png"/>
 							<h2>{{silver}}</h2>
 						</div>
 					</div>
-					<div class="col-lg-2">
+					<div class="col-lg-2 col-md-1 col-sm-0">
 					</div>
 				</div>
 			</div>
@@ -56,7 +56,7 @@
 	  	
 	  	<script type="text/ng-template" id="/categories.html">
 		  	<div class="container">
-				<h2>{{New}} {{metal}} {{Article}} {{Type}}:</h2>
+				<h2>{{New}} {{metal}} {{Article}} {{Category}}:</h2>
 				<div ng-repeat="card in categories">
 					<a ng-href="/add/#/{{metal}}/{{card._id}}">
 						<div class="btn {{btnClass}} col-xs-8 col-sm-4 col-md-2 col-lg-2">
@@ -190,13 +190,16 @@
 		</script>
 		<script>
 			$(function(){
-				var toggle = $("#langToggle").bootstrapToggle({
+				window.toggle = $("#langToggle").bootstrapToggle({
 					on: 'English',
 						off: 'Marathi',
 						offstyle:"warning"
 				}).change(function() {
 					window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
-					l([window.obj]);
+
+					if(window.obj){
+						l([window.obj]);
+					}
 					Cookies.set("my_lang_settings", window.scope.lang);
 				});
 				var lang = Cookies.get("my_lang_settings");
@@ -205,12 +208,19 @@
 					window.scope.lang = lang;
 				}else{
 					if(!window.scope.lang){
-						toggle.bootstrapToggle("off");
+						window.toggle.bootstrapToggle("off");
 					}
 				}
 				if(window.scope.lang == "eng"){
-					toggle.bootstrapToggle('on');
+					window.toggle.bootstrapToggle('on');
 				}
+
+				window.scope.$watch('lang', function() {
+				if(window.scope.lang){
+					window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
+				}
+
+			});
 			});
 			function getL($scope, word){
 				return ($scope.lang=="mar")?getMar($scope.locale,word):word;
@@ -274,14 +284,26 @@
 			.controller('homeController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
 				window.scope = $scope;
 				window.http = $http;
+				
+				var lang = Cookies.get("my_lang_settings");
+				if(window.scope.lang != lang){
+					window.scope.lang = lang;
+				}
+				
 				l([{gold:"Gold", silver:"Silver", New:"New", Article:"Article"}]);
 			}])
 			.controller('categoriesController', ['$http', '$scope', '$routeParams', '$location', function ($http, $scope, $routeParams, $location) {
 				window.scope = $scope;
 				window.http = $http;
 				
+				var lang = Cookies.get("my_lang_settings");
+				if(window.scope.lang != lang){
+					window.scope.lang = lang;
+				}
+				
 				$scope.$watch('lang', function() {
 					//console.log(window.data_data);
+					
 					if(window.obj){
 						l([window.obj,function(){
 							if(window.data_data){
@@ -307,7 +329,7 @@
 	        		obj.metal = a[1];
 	        		obj.New = "New";
 	        		obj.Article = "Article";
-	        		obj.Type = "Type";
+	        		obj.Category = "Category";
 	        		window.data_data = [];
 	        		for (var i = data.length - 1; i >= 0; i--) {
 	        			obj[data[i].name] = data[i].name;
@@ -331,6 +353,12 @@
 			.controller('add_categoryController', ['$scope', '$http', function($scope, $http) {
 				window.scope = $scope;
 				window.http = $http;
+				
+				var lang = Cookies.get("my_lang_settings");
+				if(window.scope.lang != lang){
+					window.scope.lang = lang;
+				}
+				
 				$scope.submitForm = function() {
 					$("#sbt_btn").html("Uploading...").attr("disabled","true");
 					var eng = $scope.engVal;
