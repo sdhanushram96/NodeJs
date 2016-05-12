@@ -10,7 +10,7 @@ var stock = require('./routes/stock');
 var sales = require('./routes/sales');
 var localizes = require('./routes/localizes');
 var categories = require('./routes/categories');
-
+var bills = require('./routes/bills');
 var mongoose = require('mongoose');
 
 //mongoose.connect('mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery', function(err) {
@@ -47,6 +47,8 @@ app.use('/api/stock', stock);
 app.use('/api/sales', sales);
 app.use('/api/categories', categories);
 app.use('/api/localize', localizes);
+app.use('/api/bills', bills);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

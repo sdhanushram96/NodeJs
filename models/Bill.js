@@ -15,40 +15,15 @@ var BillSchema = new mongoose.Schema({
 		type: Number
 	},
 	sold_articles: [
-		ArticleSchema
+		mongoose.Schema.Types.ObjectId
 	],
-	image: {
-		data: Buffer,
-		contentType: String
-	},
-	metal: {
-		type: String,
-		enum: ['Gold', 'Silver'],
-		required: [true, 'Which metal ?']
-	},
-	wages: {
-		type: Number,
-		default: 0
-	},
-	drawer: {
-		type: String,
-		required: true,
-		default: "Stock",
-		enum: ["Stock", "Sales"]
-	},
-	netWeight: {
+	resell_articles: [
+		String //TODO added mood saaman
+	],
+	total: {
 		type: Number,
 		required: true
-	},
-	grossWeight: {
-		type: Number,
-		required: true
-	},
-	carat: {
-		type: Number,
-		required: true
-	},
-
+	}
 });
 
-module.exports = mongoose.model('Article', ArticleSchema);
+module.exports = mongoose.model('Bill', BillSchema);
