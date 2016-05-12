@@ -6,11 +6,16 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
 		<link href="/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+		<link href="/bower_components/bootstrap-checkbox-x/css/checkbox-x.min.css" rel="stylesheet"/>
+		<link href="/bower_components/bootstrap-checkbox-x/css/theme-krajee-flatblue.min.css" rel="stylesheet"/>
+
 
 		<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
 		<script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
 		<script src="/bower_components/angular/angular.js"></script>
 		<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+		<script src="/bower_components/bootstrap-checkbox-x/js/checkbox-x.min.js"></script>
+
 
 		<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
 		<script src="/javascripts/includes.js" type="text/javascript"></script>
@@ -18,6 +23,13 @@
 		<style type="text/css">
 			body {
 			   font-size: 20px;
+			}
+			.check{
+				margin-top:60px;
+				height:100%;
+				display: inline-block;
+				vertical-align: middle;
+				float: none;
 			}
 		</style>
 	</head>
@@ -43,7 +55,7 @@
 		<br>
 		<br>
 		<br>
-		
+
 
 		<div class="container">
 			<div class="well form-inline row">
@@ -51,7 +63,7 @@
 					<label class="control-label">Search:</label>
 					<input class="form-control input-md" ng-model="cat"/>
 				</div>
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 					<!--<label class="control-label">Gold:</label>
 					<input class="form-control" type="checkbox" ng-model="search.metal"/>-->
 					<!--<label class="checkbox-label"><input type="checkbox" value=""> Gold</label>-->
@@ -62,6 +74,8 @@
 							ng-true-value='' />
 								Gold
        				</label>
+       			</div>
+       			<div class="col-sm-3">
        				<label>
 	       				<input type="checkbox"
 							ng-model='search.metal1' 
@@ -69,7 +83,10 @@
 							ng-true-value='' />
 								Silver
        				</label>
-
+				</div>
+				<div class="col-sm-2">
+				
+					<span class="glyphicon glyphicon-name"></span>
 				</div>
 			</div>
 			
@@ -77,7 +94,7 @@
   				<li class="list-group-item {{article.bgClass}}">
   					<div class="row">
 						<img class="col-lg-2 col-sm-2" data-ng-src="data:image/png;base64,{{article.category_src}}"/>
-						<div class="col-lg-10 col-sm-10">
+						<div class="col-lg-9 col-sm-9">
 							<div class="row">
 								<h3>{{article.category_name}}</h3>
 							</div>
@@ -107,6 +124,9 @@
 								</div>
 							</div>
 						</div>
+						<div class="col-xs-1 check">
+							<input type="checkbox" class="input20" data-theme="krajee-flatblue" data-toggle="checkbox-x" value="0" data-three-state="false"  data-size="xl">
+						</div>
 					</div>
   				</li>
 			</ul>
@@ -126,8 +146,6 @@
 						wages 		: "wages",
 						weight_unit : "grams", 
 						Weight 		: "Weight"
-					},function(){
-						console.log(window.names);
 					}]);
 					
 					$scope.$watch('lang', function() {
@@ -164,6 +182,8 @@
 						if(window.scope.lang == "eng"){
 							window.toggle.bootstrapToggle('on');
 						}
+
+						
 					});
 					$scope.articles = [];
 					$http
@@ -188,6 +208,9 @@
 										myObj.category_src = base64ArrayBuffer(category.image.data.data);
 										myObj.bgClass = "list-group-item-"+((article.metal == "Gold")?"warning":"info");
 										$scope.articles.push(myObj);
+										setTimeout(function(){
+											$(".input20").checkboxX();
+										},100);
 									});
 							});
 					});

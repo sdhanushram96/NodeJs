@@ -23,7 +23,15 @@ var ArticleSchema = new mongoose.Schema({
 		default: "Stock",
 		enum: ["Stock", "Sales"]
 	},
-	weight: {
+	netWeight: {
+		type: Number,
+		required: true
+	},
+	netWeight: {
+		type: Number,
+		required: true
+	},
+	carat: {
 		type: Number,
 		required: true
 	},
