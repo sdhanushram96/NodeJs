@@ -207,9 +207,9 @@
 			  				</div>
 			  				
 			  				<div class="form-group">
-			    				<label class="control-label	col-lg-3" for="caratTxt">{{Carat}} : </label>
+			    				<label class="control-label	col-lg-3" for="karatTxt">{{Carat}} : </label>
 							    <div class="col-lg-9">
-									<input type="text" ng-model="caratVal" name="carat" class="input-lg form-control" id="caratTxt" required="true">
+									<input type="text" ng-model="karatVal" name="karat" class="input-lg form-control" id="karatTxt" required="true">
 								</div>
 			  				</div>
 
@@ -441,7 +441,7 @@
 							$scope.weightVal = 0.0;
 							$scope.wagesVal = 0;
 							$("#wagesTxt").numpad();
-							$("#caratTxt").numpad();
+							$("#karatTxt").numpad();
 							
 							$("#netweightTxt").numpad();
 							$("#grossweightTxt").numpad();
@@ -453,7 +453,7 @@
 							var obj ={};
 							obj.netWeight = parseFloat($scope.netweightVal);
 							obj.grossWeight = parseFloat($scope.grossweightVal);
-							obj.carat = parseInt($scope.caratVal);
+							obj.karat = parseInt($scope.karatVal);
 							
 
 							obj.wages = parseFloat($scope.wagesVal);

@@ -1,9 +1,22 @@
 var mongoose = require('mongoose');
 
-var ArticleSchema = new mongoose.Schema({
-	category: {
-		type: mongoose.Schema.Types.ObjectId
+var BillSchema = new mongoose.Schema({
+	date: {
+		type: Date,
+		default: Date.now
 	},
+	cust_name: {
+		type: String
+	},
+	cust_place: {
+		type: String
+	},
+	cust_contact: {
+		type: Number
+	},
+	sold_articles: [
+		ArticleSchema
+	],
 	image: {
 		data: Buffer,
 		contentType: String
@@ -31,14 +44,11 @@ var ArticleSchema = new mongoose.Schema({
 		type: Number,
 		required: true
 	},
-	karat: {
+	carat: {
 		type: Number,
 		required: true
 	},
-	added: {
-		type: Date,
-		default: Date.now
-	}
+
 });
 
 module.exports = mongoose.model('Article', ArticleSchema);
