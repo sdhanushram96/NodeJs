@@ -27,7 +27,7 @@ var ArticleSchema = new mongoose.Schema({
 		type: Number,
 		required: true
 	},
-	netWeight: {
+	grossWeight: {
 		type: Number,
 		required: true
 	},

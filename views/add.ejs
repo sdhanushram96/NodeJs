@@ -432,7 +432,6 @@
 							weight_unit:"grams", 
 							New:"New", 
 							Article:"Article",
-							Weight:"Weight",
 							grossWeight : "Gross Weight",
 							netWeight : "Net Weight",
 							Carat : "Carat"
@@ -462,9 +461,6 @@
 							obj.metal = $scope.metal_eng;
 
 							$.post("/api/stock", obj, function(s, r){
-								console.log(s);
-								console.log(r);
-
 								if(s._id){
 									$("#sbt_btn")
 						        		.removeClass("btn-primary")
