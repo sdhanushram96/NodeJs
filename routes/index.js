@@ -14,10 +14,15 @@ router.get('/add', function(req, res, next) {
 	});
 });
 
-
 router.get('/stock', function(req, res, next) {
 	res.render('stock', {
 		title: 'stock'
+	});
+});
+
+router.get('/cart', function(req, res, next) {
+	res.render('cart', {
+		title: 'cart'
 	});
 });
 

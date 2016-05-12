@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html ng-app="app">
+	<head>
+		<title>Cart</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
+		<link rel="stylesheet" href="/stylesheets/numpad.css" />
+		<link href="/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+
+		<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
+		<script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
+		<script src="/bower_components/angular/angular.js"></script>
+		<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+
+		<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+		<script src="/javascripts/numpad.js" type="text/javascript"></script>
+		<script src="/javascripts/includes.js" type="text/javascript"></script>
+
+	</head>
+	<body ng-controller="bodyController">
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+	      			<button class=" btn" style="margin-top:8px;" onclick="window.history.back();">
+						<b>&#8678;</b> Back
+					</button>
+				</div>
+				<div class="nav navbar-nav navbar-right" style="padding: 10px;">
+					<input type="checkbox" id="langToggle">
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			
+		</div>
+
+		<script type="text/javascript">
+			angular
+				.module('app',[])
+				.controller("bodyController",['$scope', '$http', function($scope, $http){
+					window.scope = $scope;
+					window.http = $http;
+
+					l([{
+						New:"New",
+						Article:"Article",
+						Todays : "Today's",
+						"rate" : "rate"
+					}]);
+					
+					var g_rate = Cookies.get("gold_rate");
+					var s_rate = Cookies.get("silver_rate");
+
+					$scope.gold_rate = (g_rate) ? g_rate : "00.00";
+					$scope.silver_rate = (s_rate) ? s_rate : "00.00";
+
+					$scope.$watch('lang', function() {
+						if(window.scope.lang){
+							window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
+						}
+					});
+
+					$scope.$watch('gold_rate', function() {
+						Cookies.set("gold_rate", $scope.gold_rate);
+					});
+					
+					$scope.$watch('silver_rate', function() {
+						Cookies.set("silver_rate", $scope.silver_rate);
+					});
+
+					$(function(){
+						window.toggle = $("#langToggle").bootstrapToggle({
+							on: 'English',
+							off: 'Marathi',
+							offstyle:"warning"
+						}).change(function() {
+							window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
+							l([window.obj]);
+							Cookies.set("my_lang_settings", window.scope.lang);
+							
+						});
+						$(".gold").numpad({
+							target : $("#test"),
+							onChange : function(e, val){
+								$scope.$apply(function() { 
+									window.scope.gold_rate = val;
+								});
+							}
+						});
+						$(".silver").numpad({
+							target : $("#test"),
+							onChange : function(e, val){
+								$scope.$apply(function() { 
+									window.scope.silver_rate = val;
+								});
+							}
+						});
+
+						var lang = Cookies.get("my_lang_settings");
+						if(lang){
+							window.scope.lang = lang;
+						}else{
+							if(!window.scope.lang){
+								window.toggle.bootstrapToggle("off");
+							}
+						}
+						
+						if(window.scope.lang == "eng"){
+							window.toggle.bootstrapToggle('on');
+						}
+					});
+			}]);
+		</script>
+	</body>
+</html>
