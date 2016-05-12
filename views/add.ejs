@@ -163,22 +163,22 @@
 					<div class="row">
 						<div class="col-xs-10 col-lg-10">
 							<div class="form-group">
-			    				<label class="control-label	col-lg-2" for="metalTxt">Metal:</label>
-							    <div class="col-lg-10">
+			    				<label class="control-label	col-lg-3" for="metalTxt">Metal:</label>
+							    <div class="col-lg-9">
 									<input type="text" disabled="true" class="input-lg form-control" id="metalTxt" value="{{metal}}">
 								</div>
 			  				</div>
 			  				
 			  				<div class="form-group">
-			    				<label class="control-label col-lg-2" for="categoryTxt">Category:</label>
-							    <div class="col-lg-10">
+			    				<label class="control-label col-lg-3" for="categoryTxt">Category:</label>
+							    <div class="col-lg-9">
 									<input type="text" disabled="true" class="input-lg form-control" id="categoryTxt" value="{{category_name}}">
 								</div>
 			  				</div>
 			  				
 			  				<div class="form-group">
-			    				<label class="control-label	col-lg-2" for="wagesTxt">{{wages}} : </label>
-							    <div class="col-lg-9">
+			    				<label class="control-label	col-lg-3" for="wagesTxt">{{Wages}} : </label>
+							    <div class="col-lg-8">
 									<input type="text" ng-model="wagesVal" name="wages" class="input-lg form-control" id="wagesTxt" value="0">
 								</div>
 								<span class="col-lg-1">
@@ -187,13 +187,30 @@
 			  				</div>
 			  				
 			  				<div class="form-group">
-			    				<label class="control-label	col-lg-2" for="weightTxt">{{Weight}} : </label>
-							    <div class="col-lg-9">
-									<input type="text" ng-model="weightVal" name="weight" class="input-lg form-control" id="weightTxt" value="0">
+			    				<label class="control-label	col-lg-3" for="netweightTxt">{{netWeight}} : </label>
+							    <div class="col-lg-8">
+									<input type="text" ng-model="netweightVal" name="netweight" class="input-lg form-control" id="netweightTxt" required="true" >
 								</div>
 								<span class="col-lg-1">
 									{{weight_unit}}
 								</span>
+			  				</div>
+			  				
+			  				<div class="form-group">
+			    				<label class="control-label	col-lg-3" for="grossweightTxt">{{grossWeight}} : </label>
+							    <div class="col-lg-8">
+									<input type="text" ng-model="grossweightVal" name="grossweight" class="input-lg form-control" id="grossweightTxt" required="true">
+								</div>
+								<span class="col-lg-1">
+									{{weight_unit}}
+								</span>
+			  				</div>
+			  				
+			  				<div class="form-group">
+			    				<label class="control-label	col-lg-3" for="caratTxt">{{Carat}} : </label>
+							    <div class="col-lg-9">
+									<input type="text" ng-model="caratVal" name="carat" class="input-lg form-control" id="caratTxt" required="true">
+								</div>
 			  				</div>
 
 	  					</div>
@@ -411,28 +428,43 @@
 						$scope.category_src ="data:image/png;base64," + base64ArrayBuffer(data.image.data.data);;
 						l([{ metal:a[1], 
 							category_name: data.name, 
-							wages:"wages", 
+							Wages:"Wages", 
 							weight_unit:"grams", 
 							New:"New", 
 							Article:"Article",
-							Weight:"Weight"
+							Weight:"Weight",
+							grossWeight : "Gross Weight",
+							netWeight : "Net Weight",
+							Carat : "Carat"
 						}]);
 						
 						$(function(){
 							$scope.weightVal = 0.0;
 							$scope.wagesVal = 0;
 							$("#wagesTxt").numpad();
-							$("#weightTxt").numpad();
+							$("#caratTxt").numpad();
+							
+							$("#netweightTxt").numpad();
+							$("#grossweightTxt").numpad();
+
 						});
 						$scope.submitForm = function() {
 
 							$("#sbt_btn").html("Adding...").attr("disabled","true");
 							var obj ={};
-							obj.weight = parseFloat($scope.weightVal);
+							obj.netWeight = parseFloat($scope.netweightVal);
+							obj.grossWeight = parseFloat($scope.grossweightVal);
+							obj.carat = parseFloat($scope.caratVal);
+							
+
 							obj.wages = parseFloat($scope.wagesVal);
 							obj.category = $scope.category_id;
 							obj.metal = $scope.metal_eng;
+
 							$.post("/api/stock", obj, function(s, r){
+								console.log(s);
+								console.log(r);
+
 								if(s._id){
 									$("#sbt_btn")
 						        		.removeClass("btn-primary")
