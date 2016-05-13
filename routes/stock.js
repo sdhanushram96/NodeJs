@@ -16,9 +16,11 @@ router.get('/', function(req, res, next) {
 
 router.get('/:id', function(req, res, next) {
 	Article
-		.find()
-		.where('drawer').equals("Stock")
-		.where('_id').equals(req.params.id)
+		.findOne({
+			_id: req.params.id,
+			drawer: "Stock"
+		})
+		.populate('category')
 		.exec(function(err, post) {
 			if (err) return next(err);
 			res.json(post);
