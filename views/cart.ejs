@@ -128,7 +128,7 @@
 							{{article.grossWeight}}
 						</td>
 						<td>
-							<input type="number" class="wages_txt" ng-model="article.wages">
+							<input type="number" class="wages_txt form-control input-md" ng-model="article.wages">
 						</td>
 						<td class="sub_total">
 							{{calc(article)}}
@@ -141,19 +141,44 @@
 					</tr>
 				</tbody>
 			</table>
-<!--
+			<!--
 			<hr style="margin-bottom:5px !important; margin-top:5px !important; " />
 			<h3>Resell Articles</h3>
 			<div>
 			</div>-->
 			<hr style="margin-bottom:5px !important; margin-top:5px !important; " />
 			<div class="row">
-				<div class="col-xs-9">
+				<div class="col-xs-10 h4 text-right">
+					Additional Charges(stone, etc)
+				</div>
+				<div class="col-xs-2">
+					<input type="number" id="additionalTxt" class="input form-control" ng-model="additional_charges"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-10 h4 text-right">
+					Sub-total
+				</div>
+				<div class="col-xs-2 text-center">
+					{{sub_total | currency:"&#8377;":2}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-10 h4 text-right">
+					Tax(1.75%)
+				</div>
+				<div class="col-xs-2 text-center">
+					<input type="number" id="taxTxt" class="input form-control" ng-model="tax"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-10">
 					<h2>Total</h2>
 				</div>
-				<div class="col-xs-3 h2 text-primary bg-warning">
-					{{Total_amount}} &#8377;
+				<div class="col-xs-2 h3 text-primary bg-warning text-center">
+					{{Total_amount | currency:"&#8377;":2}}
 				</div>
+			</div>
 		</div>
 		<div class="hide" id="test"></div>
 
@@ -189,7 +214,9 @@
 					var g_rate = Cookies.get("gold_rate");
 					var s_rate = Cookies.get("silver_rate");
 
-					$scope.Total_amount = 0;
+					$scope.additional_charges = 0;
+					$scope.sub_total = 0;
+					$scope.tax = 0;
 					$scope.gold_rate = (g_rate) ? g_rate : "00.00";
 					$scope.silver_rate = (s_rate) ? s_rate : "00.00";
 
@@ -209,8 +236,16 @@
 						$scope.doTotal();
 					});
 
+					$scope.$watch('additional_charges', function() {
+						$scope.doTotal();
+					});
+
+					$scope.$watch('tax', function() {
+						$scope.doTotal();
+					});
+
 					$scope.calc = function(article){
-						return (article.grossWeight * ((article.metal=="Gold") ? $scope.gold_rate : 
+						return (article.netWeight * ((article.metal=="Gold") ? $scope.gold_rate : 
 							$scope.silver_rate)) + article.wages;
 					}
 					$scope.doTotal = function(){
@@ -219,7 +254,10 @@
 							total += $scope.calc(article);
 						});
 
-						$scope.Total_amount = total;
+						total += $scope.additional_charges;
+						$scope.sub_total = total;
+						
+						$scope.Total_amount = total + (total * $scope.tax * 0.01);
 					}
 					$scope.delThis = function(article){
 						$scope.sales_articles.splice($.inArray(article, $scope.sales_articles),1);
@@ -266,6 +304,9 @@
 							
 						});
 						$("#cust_contactTxt").numpad();
+						$("#additionalTxt").numpad();
+						$("#taxTxt").numpad();
+
 						$(".gold").numpad({
 							target : $("#test"),
 							onChange : function(e, val){
