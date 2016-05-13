@@ -107,6 +107,7 @@
 						<th>{{grossWeight}}</th>
 						<th>{{Wages}}</th>
 						<th>Total</th>
+						<th> </th>
 					</tr>
 				</thead>
 				<tbody>
@@ -131,6 +132,11 @@
 						</td>
 						<td class="sub_total">
 							{{calc(article)}}
+						</td>
+						<td>
+							<button type="button" ng-click="delThis(article)" class="btn btn-xs btn-danger">
+								<span class="glyphicon glyphicon-trash"></span>&nbsp;
+							</button>
 						</td>
 					</tr>
 				</tbody>
@@ -200,6 +206,7 @@
 					
 					$scope.$watch('silver_rate', function() {
 						Cookies.set("silver_rate", $scope.silver_rate);
+						$scope.doTotal();
 					});
 
 					$scope.calc = function(article){
@@ -214,6 +221,9 @@
 
 						$scope.Total_amount = total;
 					}
+					$scope.delThis = function(article){
+						$scope.sales_articles.splice($.inArray(article, $scope.sales_articles),1);
+					}
 					$scope.$watch('sales_articles', function() {
 						$scope.doTotal();
 					}, true);
@@ -225,7 +235,11 @@
 							$scope.$apply(function() {
 								$scope.sales_articles.push(s);
 								setTimeout(function(){
-									$(".wages_txt").numpad();
+									$(".wages_txt").each(function(){
+										if(!$(this).attr("data-numpad")){
+											$(this).numpad();
+										}
+									});
 								}, 50);
 							});
 						}).fail(function() {
