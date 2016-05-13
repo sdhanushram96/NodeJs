@@ -231,26 +231,28 @@
 					$scope.sales_articles = [];
 					$scope.addSales = function(){
 						var id = prompt("Please enter Article ID");
-						for (var i = 0; i < $scope.sales_articles.length; i++) {
-							if(id == $scope.sales_articles[i]._id){
-								alert("Article already exists in the cart");
-								return;
+						if(id){
+							for (var i = 0; i < $scope.sales_articles.length; i++) {
+								if(id == $scope.sales_articles[i]._id){
+									alert("Article already exists in the cart");
+									return;
+								}
 							}
-						}
-						$.get("/api/stock/"+id,function(s, r){
-							$scope.$apply(function() {
-								$scope.sales_articles.push(s);
-								setTimeout(function(){
-									$(".wages_txt").each(function(){
-										if(!$(this).attr("data-numpad")){
-											$(this).numpad();
-										}
-									});
-								}, 50);
+							$.get("/api/stock/"+id,function(s, r){
+								$scope.$apply(function() {
+									$scope.sales_articles.push(s);
+									setTimeout(function(){
+										$(".wages_txt").each(function(){
+											if(!$(this).attr("data-numpad")){
+												$(this).numpad();
+											}
+										});
+									}, 50);
+								});
+							}).fail(function() {
+								alert("Wrong ID");
 							});
-						}).fail(function() {
-							alert("Wrong ID");
-						});
+						}
 					}
 					$(function(){
 						window.toggle = $("#langToggle").bootstrapToggle({
