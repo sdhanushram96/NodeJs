@@ -180,7 +180,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="hide" id="test"></div>
+		<div class="hide" id="gold_rate"></div>
+		<div class="hide" id="silver_rate"></div>
 
 		<script type="text/javascript">
 			$(function(){
@@ -219,6 +220,9 @@
 					$scope.tax = 0;
 					$scope.gold_rate = (g_rate) ? g_rate : "00.00";
 					$scope.silver_rate = (s_rate) ? s_rate : "00.00";
+
+					$("#gold_rate").html($scope.gold_rate);
+					$("#silver_rate").html($scope.silver_rate);
 
 					$scope.$watch('lang', function() {
 						if(window.scope.lang){
@@ -308,7 +312,7 @@
 						$("#taxTxt").numpad();
 
 						$(".gold").numpad({
-							target : $("#test"),
+							target : $("#gold_rate"),
 							onChange : function(e, val){
 								$scope.$apply(function() { 
 									window.scope.gold_rate = val;
@@ -316,7 +320,7 @@
 							}
 						});
 						$(".silver").numpad({
-							target : $("#test"),
+							target : $("#silver_rate"),
 							onChange : function(e, val){
 								$scope.$apply(function() { 
 									window.scope.silver_rate = val;
