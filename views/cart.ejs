@@ -30,6 +30,8 @@
 				cursor: pointer;
 				text-align: center;
 				vertical-align: middle;
+				font-size: 1.3em;
+				line-height: 2em;
 			}
 			.rates.gold{
 				color: #ffbc48;
@@ -46,22 +48,75 @@
 				display: flex;
 			    align-items: center;
 			}
+			.col-xs-2.text-muted.text-center{
+				cursor: pointer;
+				color :#ccc;
+			}
+			.col-xs-2.text-muted.text-center.active{
+				background-color: #678;
+			}
+			.col-xs-2.text-muted.text-center:hover{
+				background-color: #444;
+			}
 		</style>
 	</head>
 	<body ng-controller="bodyController">
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
-				<div class="nav navbar-header row" style="width:60%">
-					<div class="col-xs-2">
-		      			<button class="btn" style="margin-top:8px;" onclick="window.history.back();">
-							<b>&#8678;</b> Back
-						</button>
+				<div class="nav navbar-header row" style="width:90%">
+					<div class="col-xs-5">
+						<div class="col-xs-3">
+			      			<button class="btn" style="margin-top:8px;" onclick="window.history.back();">
+								<b>&#8678;</b> Back
+							</button>
+						</div>
+						<div class="col-xs-4 rates gold">
+							{{gold_rate}} &#8377;/gm
+						</div>
+						<div class="col-xs-5 rates silver">
+							{{silver_rate}} &#8377;/gm
+						</div>
 					</div>
-					<div class="col-xs-5 rates gold">
-						{{gold_rate}} &#8377;/gm
-					</div>
-					<div class="col-xs-5 rates silver">
-						{{silver_rate}} &#8377;/gm
+					<div class="col-xs-7">
+						<div ng-repeat="cart in carts">
+							<div class="{{cart.active}} col-xs-2 text-muted text-center" ng-click='goTo(cart.number);'>
+								Cart {{cart.number}}
+								<span class="h4">
+									{{cart.total | currency:"&#8377;":2}}
+								</span>
+							</div>
+						</div>
+						<!--
+						<div class="col-xs-2 cart_btn text-muted text-center">
+							Cart 2
+							<span class="h4">
+								{{cart_total[1] | currency:"&#8377;":2}}
+							</span>
+						</div>
+						<div class="col-xs-2 cart_btn text-muted text-center">
+							Cart 3
+							<span class="h4">
+								{{cart_total[2] | currency:"&#8377;":2}}
+							</span>
+						</div>
+						<div class="col-xs-2 cart_btn text-muted text-center">
+							Cart 4
+							<span class="h4">
+								{{cart_total[3] | currency:"&#8377;":2}}
+							</span>
+						</div>
+						<div class="col-xs-2 cart_btn text-muted text-center">
+							Cart 5
+							<span class="h4">
+								{{cart_total[4] | currency:"&#8377;":2}}
+							</span>
+						</div>
+						<div class="col-xs-2 cart_btn text-muted text-center">
+							Cart 6
+							<span class="h4">
+								{{cart_total[5] | currency:"&#8377;":2}}
+							</span>
+						</div>-->
 					</div>
 				</div>
 				<div class="nav navbar-nav navbar-right" style="padding: 10px;">
@@ -69,8 +124,7 @@
 				</div>
 			</div>
 		</nav>
-		<br>
-		<br>
+		<br><br><br>
 
 		<div class="container">
 			<div class="row">
@@ -221,6 +275,7 @@
 					$("#silver_rate").html($scope.silver_rate);
 
 					$scope.cartName = "cart_"+$location.path().split("/")[1];
+					Cookies.set("cartNo",$location.path().split("/")[1]);
 					var cart = Cookies.get($scope.cartName);
 					if(cart){
 						$scope.cart = JSON.parse(cart);
@@ -232,41 +287,23 @@
 						$scope.cart.sales_articles = [];
 					}
 
-					
-					$scope.$watch('lang', function() {
-						if(window.scope.lang){
-							window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
-						}
-					});
-
-					$scope.$watch('gold_rate', function() {
-						Cookies.set("gold_rate", $scope.gold_rate);
-						$scope.doTotal();
-					});
-					
-					$scope.$watch('silver_rate', function() {
-						Cookies.set("silver_rate", $scope.silver_rate);
-						$scope.doTotal();
-					});
-
-					$scope.$watch('cart.additional_charges', function() {
-						$scope.doTotal();
-					});
-
-					$scope.$watch('cart.tax', function() {
-						$scope.doTotal();
-					});
-					$scope.$watch('cart.sales_articles', function() {
-						$scope.doTotal();
-					}, true);
-					
-					$scope.$watch('cart', function() {
-						Cookies.set($scope.cartName, JSON.stringify($scope.cart));
-					}, true);
+					$scope.goTo = function(cartNo){
+						window.location.href = "#/"+(cartNo);
+						window.location.reload();	
+					}
 
 					$scope.calc = function(article){
 						return (article.netWeight * ((article.metal=="Gold") ? $scope.gold_rate : 
 							$scope.silver_rate)) + article.wages;
+					}
+					$scope.getTotal = function(cart){
+						var total = 0;
+						cart.sales_articles.forEach(function(article) {
+							total += $scope.calc(article);
+						});
+
+						total += cart.additional_charges;
+						return(total + (total * $scope.cart.tax * 0.01));
 					}
 					$scope.doTotal = function(){
 						var total = 0;
@@ -280,7 +317,7 @@
 						$scope.Total_amount = total + (total * $scope.cart.tax * 0.01);
 					}
 					$scope.delThis = function(article){
-						$scope.cart.sales_articles.splice($.inArray(article, $scope.cart.sales_articles),1);
+						$scope.cart.sales_articles.splice($.inArray(article, $scope.cart.sales_articles), 1);
 					}
 					
 					$scope.addSales = function(){
@@ -309,6 +346,65 @@
 							});
 						}
 					}
+
+					$scope.loadAllCarts = function(){
+						$scope.carts = [];
+						var ac = $location.path().split("/")[1];
+						for(var i = 0; i < 6; i++){
+							var cart = Cookies.get("cart_"+(i+1));
+							var obj = {};
+							obj.number = (i+1);
+							obj.active = "";
+							obj.ids = [];
+							if(ac == i+1){
+								obj.active = "active";
+							}
+							if(cart){
+								cart = JSON.parse(cart);
+								obj.total = $scope.getTotal(cart);
+								for(var j = 0; j < cart.sales_articles.length; j++){
+									obj.ids.push(cart.sales_articles[j]._id);
+								}
+							}else{
+								obj.total = 0;
+							}
+							$scope.carts.push(obj);
+						}
+					};
+
+					$scope.$watch('lang', function() {
+						if(window.scope.lang){
+							window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
+						}
+					});
+
+					$scope.$watch('gold_rate', function() {
+						Cookies.set("gold_rate", $scope.gold_rate);
+						$scope.doTotal();
+					});
+					
+					$scope.$watch('silver_rate', function() {
+						Cookies.set("silver_rate", $scope.silver_rate);
+						$scope.doTotal();
+					});
+
+					$scope.$watch('cart.additional_charges', function() {
+						$scope.doTotal();
+					});
+
+					$scope.$watch('cart.tax', function() {
+						$scope.doTotal();
+					});
+					$scope.$watch('cart.sales_articles', function() {
+						$scope.doTotal();
+					}, true);
+					
+					$scope.$watch('cart', function() {
+						$scope.doTotal();
+						Cookies.set($scope.cartName, JSON.stringify($scope.cart));
+						$scope.loadAllCarts();
+					}, true);
+
 					$(function(){
 						window.toggle = $("#langToggle").bootstrapToggle({
 							on: 'English',
