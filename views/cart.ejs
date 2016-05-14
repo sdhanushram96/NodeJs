@@ -126,8 +126,8 @@
 						<th>Metal</th>
 						<th>Category</th>
 						<th>{{Karat}}</th>
-						<th>{{netWeight}}</th>
 						<th>{{grossWeight}}</th>
+						<th>{{netWeight}}</th>
 						<th>{{Wages}}</th>
 						<th>Total</th>
 						<th> </th>
@@ -145,15 +145,16 @@
 							{{article.karat}}
 						</td>
 						<td>
-							{{article.netWeight}}
+							{{article.grossWeight}}
 						</td>
 						<td>
-							{{article.grossWeight}}
+							{{article.netWeight}}
 						</td>
 						<td>
 							<input type="number" class="wages_txt form-control input-md" ng-model="article.wages">
 						</td>
 						<td>
+						<!--{{cart.total | currency:"&#8377;":2}}-->
 							{{calc(article)}}
 						</td>
 						<td>
