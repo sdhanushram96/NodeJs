@@ -329,6 +329,15 @@
 									return;
 								}
 							}
+							for (var i = 0; i < $scope.carts.length; i++) {
+								for(var j = 0; j < $scope.carts[i].ids.length; j++){
+									if(id == $scope.carts[i].ids[j]){
+										alert("Article already exists in the CART : "+(i+1));
+										return
+									}
+								}
+							}
+							
 							$.get("/api/stock/"+id,function(s, r){
 								$scope.$apply(function() {
 									s.category.image = "";
