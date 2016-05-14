@@ -76,17 +76,17 @@
 			<div class="row">
 				<label class="control-label	col-xs-2" for="cust_nameTxt">Customer Name:</label>
 				<div class="col-xs-4">
-					<input type="text" ng-model="cust_name" class="input-md form-control" id="cust_nameTxt">
+					<input type="text" ng-model="cart.cust_name" class="input-md form-control" id="cust_nameTxt">
 				</div>
 				<label class="control-label	col-xs-1" for="cust_contactTxt">Phone:</label>
 				<div class="col-xs-5">
-					<input type="text" ng-model="cust_contact" class="input-md form-control" id="cust_contactTxt">
+					<input type="text" ng-model="cart.cust_contact" class="input-md form-control" id="cust_contactTxt">
 				</div>
 			</div>
 			<div class="row">
 				<label class="control-label	col-xs-2" for="cust_addressTxt">Address:</label>
 				<div class="col-xs-10">
-					<input type="text" ng-model="cust_address" class="input-md form-control" id="cust_addressTxt">
+					<input type="text" ng-model="cart.cust_address" class="input-md form-control" id="cust_addressTxt">
 				</div>
 			</div>
 			<hr style="margin-bottom:5px !important; margin-top:5px !important; " />
@@ -111,7 +111,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="article in sales_articles">
+					<tr ng-repeat="article in cart.sales_articles">
 						<td>
 							{{article.metal}}
 						</td>
@@ -130,7 +130,7 @@
 						<td>
 							<input type="number" class="wages_txt form-control input-md" ng-model="article.wages">
 						</td>
-						<td class="sub_total">
+						<td>
 							{{calc(article)}}
 						</td>
 						<td>
@@ -152,7 +152,7 @@
 					Additional Charges(stone, etc)
 				</div>
 				<div class="col-xs-2">
-					<input type="number" id="additionalTxt" class="input form-control" ng-model="additional_charges"/>
+					<input type="number" id="additionalTxt" class="input form-control" ng-model="cart.additional_charges"/>
 				</div>
 			</div>
 			<div class="row">
@@ -168,7 +168,7 @@
 					Tax(1.75%)
 				</div>
 				<div class="col-xs-2 text-center">
-					<input type="number" id="taxTxt" class="input form-control" ng-model="tax"/>
+					<input type="number" id="taxTxt" class="input form-control" ng-model="cart.tax"/>
 				</div>
 			</div>
 			<div class="row">
@@ -215,15 +215,24 @@
 					var g_rate = Cookies.get("gold_rate");
 					var s_rate = Cookies.get("silver_rate");
 
-					$scope.additional_charges = 0;
-					$scope.sub_total = 0;
-					$scope.tax = 0;
 					$scope.gold_rate = (g_rate) ? g_rate : "00.00";
 					$scope.silver_rate = (s_rate) ? s_rate : "00.00";
-
 					$("#gold_rate").html($scope.gold_rate);
 					$("#silver_rate").html($scope.silver_rate);
 
+					$scope.cartName = "cart_"+$location.path().split("/")[1];
+					var cart = Cookies.get($scope.cartName);
+					if(cart){
+						$scope.cart = JSON.parse(cart);
+					}else{
+						$scope.cart = {};
+						$scope.cart.additional_charges = 0;
+						$scope.sub_total = 0;
+						$scope.cart.tax = 0;
+						$scope.cart.sales_articles = [];
+					}
+
+					
 					$scope.$watch('lang', function() {
 						if(window.scope.lang){
 							window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
@@ -240,13 +249,20 @@
 						$scope.doTotal();
 					});
 
-					$scope.$watch('additional_charges', function() {
+					$scope.$watch('cart.additional_charges', function() {
 						$scope.doTotal();
 					});
 
-					$scope.$watch('tax', function() {
+					$scope.$watch('cart.tax', function() {
 						$scope.doTotal();
 					});
+					$scope.$watch('cart.sales_articles', function() {
+						$scope.doTotal();
+					}, true);
+					
+					$scope.$watch('cart', function() {
+						Cookies.set($scope.cartName, JSON.stringify($scope.cart));
+					}, true);
 
 					$scope.calc = function(article){
 						return (article.netWeight * ((article.metal=="Gold") ? $scope.gold_rate : 
@@ -254,35 +270,32 @@
 					}
 					$scope.doTotal = function(){
 						var total = 0;
-						$scope.sales_articles.forEach(function(article) {
+						$scope.cart.sales_articles.forEach(function(article) {
 							total += $scope.calc(article);
 						});
 
-						total += $scope.additional_charges;
+						total += $scope.cart.additional_charges;
 						$scope.sub_total = total;
 						
-						$scope.Total_amount = total + (total * $scope.tax * 0.01);
+						$scope.Total_amount = total + (total * $scope.cart.tax * 0.01);
 					}
 					$scope.delThis = function(article){
-						$scope.sales_articles.splice($.inArray(article, $scope.sales_articles),1);
+						$scope.cart.sales_articles.splice($.inArray(article, $scope.cart.sales_articles),1);
 					}
-					$scope.$watch('sales_articles', function() {
-						$scope.doTotal();
-					}, true);
-
-					$scope.sales_articles = [];
+					
 					$scope.addSales = function(){
 						var id = prompt("Please enter Article ID");
 						if(id){
-							for (var i = 0; i < $scope.sales_articles.length; i++) {
-								if(id == $scope.sales_articles[i]._id){
+							for (var i = 0; i < $scope.cart.sales_articles.length; i++) {
+								if(id == $scope.cart.sales_articles[i]._id){
 									alert("Article already exists in the cart");
 									return;
 								}
 							}
 							$.get("/api/stock/"+id,function(s, r){
 								$scope.$apply(function() {
-									$scope.sales_articles.push(s);
+									s.category.image = "";
+									$scope.cart.sales_articles.push(s);
 									setTimeout(function(){
 										$(".wages_txt").each(function(){
 											if(!$(this).attr("data-numpad")){
