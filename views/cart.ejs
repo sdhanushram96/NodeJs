@@ -360,7 +360,14 @@
 					};
 					
 					$scope.getCart = function(){
-						return JSON.stringify($scope.cart);
+						var j = {};
+						j.cart = $scope.cart;
+						j.cartNo = $location.path().split("/")[1];
+						j.gold_rate = $scope.gold_rate;
+						j.silver_rate = $scope.silver_rate;
+						j.sub_total = $scope.sub_total;
+						j.total = $scope.total;
+						return JSON.stringify(j);
 					}
 					
 					$scope.cartName = "cart_"+$location.path().split("/")[1];

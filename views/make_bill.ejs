@@ -22,9 +22,9 @@
 				.module('app',['ui.bootstrap'])
 				.controller("bodyController",['$scope', function($scope){
 					window.scope = $scope;
-					$scope.cart = (<%- JSON.stringify(post_data) %>).cart;
+					$scope.cart =JSON.parse((<%- JSON.stringify(post_data) %>).cart);
 					/*
-{"additional_charges":55,"tax":0,"sales_articles":[{"_id":"5736d57bbec52c7837f627f7","netWeight":5.3,"grossWeight":5.2,"karat":14,"category":{"_id":"572ec3a3d05239110015523a","name":"Ring","metal":"Gold","__v":0,"image":""},"metal":"Gold","__v":0,"added":"2016-05-14T07:36:27.404Z","drawer":"Stock","wages":50,"$$hashKey":"object:32"},{"_id":"573efba26a51d0833799174a","netWeight":6,"grossWeight":6.2,"karat":24,"category":{"_id":"573efafa6a51d08337991748","name":"Toe Ring","metal":"Silver","__v":0,"image":""},"metal":"Silver","__v":0,"added":"2016-05-20T11:57:22.626Z","drawer":"Stock","wages":20,"$$hashKey":"object:467"}],"cust_name":"Prajankya","cust_contact":"7829545547","cust_address":"Saraf Bazaar Chalisgaon"}
+{"cart":{"additional_charges":55,"tax":0,"sales_articles":[{"_id":"5736d57bbec52c7837f627f7","netWeight":5.3,"grossWeight":5.2,"karat":14,"category":{"_id":"572ec3a3d05239110015523a","name":"Ring","metal":"Gold","__v":0,"image":""},"metal":"Gold","__v":0,"added":"2016-05-14T07:36:27.404Z","drawer":"Stock","wages":50,"$$hashKey":"object:32"},{"_id":"573efba26a51d0833799174a","netWeight":6,"grossWeight":6.2,"karat":24,"category":{"_id":"573efafa6a51d08337991748","name":"Toe Ring","metal":"Silver","__v":0,"image":""},"metal":"Silver","__v":0,"added":"2016-05-20T11:57:22.626Z","drawer":"Stock","wages":20,"$$hashKey":"object:18"}],"cust_name":"Prajankya","cust_contact":"7829545547","cust_address":"Saraf Bazaar, Chalisgaon"},"cartNo":"1","gold_rate":"2340","silver_rate":"350","sub_total":14627}
 					*/
 					console.log($scope.cart);
 			}]);
