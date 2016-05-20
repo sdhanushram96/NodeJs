@@ -45,22 +45,43 @@
 			</div>
 		</nav>
 
-		<div class="container">
+		<div class="container-fluid">
 			<div class="jumbotron">
 				<div class="row text-center">
-					<div class="h1 rates gold col-xs-6">
+					<div class="h1 rates gold col-xs-2 text-right">
+						{{Gold}}:
+					</div>
+					<div class="h1 rates gold col-xs-4 text-left">
 						{{gold_rate}} &#8377;/gm
 					</div>
-					<div class="h1 rates silver col-xs-6">
+					<div class="h1 rates silver col-xs-2 text-right">
+						{{Silver}}:
+					</div>
+					<div class="h1 rates silver col-xs-4 text-left">
 						{{silver_rate}} &#8377;/gm
 					</div>
 				</div>
 			</div>
-			<button onclick="gotoAdd()" class="btn btn-primary btn-lg">{{New}} {{Article}}</button>
-			<button onclick="gotoStock()" class="btn btn-primary btn-lg">Stock</button>
-			<button onclick="gotoCart()" class="btn btn-primary btn-lg">Cart</button>
-
+			<div class="row text-center">
+				<div class="col-xs-4">
+					<button onclick="gotoAdd()" class="btn btn-primary btn-lg">
+						{{New}} {{Article}}
+					</button>
+				</div>
+				<div class="col-xs-4">
+					<button onclick="gotoStock()" class="btn btn-primary btn-lg">
+						Stock
+					</button>
+				</div>
+				<div class="col-xs-4">
+					<button onclick="gotoCart()" class="btn btn-primary btn-lg">
+						Cart
+					</button>
+				</div>
+			</div>
 		</div>
+		<span class="hide" id="g">{{gold_rate}}</span>
+		<span class="hide" id="s">{{silver_rate}}</span>
 
 		<script type="text/javascript">
 			angular
@@ -71,6 +92,8 @@
 
 					l([{
 						New:"New",
+						Gold:"Gold",
+						Silver:"Silver",
 						Article:"Article",
 						Todays : "Today's",
 						"rate" : "rate"
@@ -108,7 +131,7 @@
 							
 						});
 						$(".gold").numpad({
-							target : $("#test"),
+							target : $("#g"),
 							onChange : function(e, val){
 								$scope.$apply(function() { 
 									window.scope.gold_rate = val;
@@ -116,7 +139,7 @@
 							}
 						});
 						$(".silver").numpad({
-							target : $("#test"),
+							target : $("#s"),
 							onChange : function(e, val){
 								$scope.$apply(function() { 
 									window.scope.silver_rate = val;
