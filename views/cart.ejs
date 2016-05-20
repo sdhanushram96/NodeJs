@@ -195,22 +195,46 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-xs-3 text-center">
+				<div class="col-xs-2 text-center">
 					<button ng-click="clearCart();" class="btn btn-md btn-danger"> Clear CART <span class="glyphicon glyphicon-trash"></span>&nbsp;</button>
 				</div>
-				<div class="col-xs-3 text-center">
-					<form method="post" target="print_popup" action="/make_bill" onsubmit="window.open('about:blank','print_popup','width=360,height=500');">
-						<input type="hidden" name="cart" ng-value="getCart()">
-						</input>
-						<button type="submit" class="btn btn-lg btn-primary">
-							Make Bill 
-							<span class="glyphicon glyphicon-print"></span>
-							&nbsp;
-						</button>
-					</form>
+				<div class="col-xs-6 text-center">
+					<div ng-show="really_print">
+						<form method="post" target="print_popup" action="/make_bill" onsubmit="window.open('about:blank','print_popup','width=360,height=500');">
+							<input type="hidden" name="cart" ng-value="getCart()">
+							</input>
+							<div class="row">
+								<div class="col-xs-4 text-danger">
+									<h2>
+										Are You Sure ?
+									</h2>
+								</div>
+								<div class="col-xs-4">
+									<button type="submit" onclick="printed();" class="btn btn-lg btn-success">
+										Print
+										<span class="glyphicon glyphicon-print"></span>
+										&nbsp;
+									</button>
+								</div>
+								<div class="col-xs-4">
+									<button type="reset" ng-click="really_print=false;" class="btn btn-lg btn-danger">
+										No&nbsp;
+										<span class="glyphicon glyphicon-remove"></span>
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div ng-show="!really_print">
+							<button ng-click="really_print=true;" class="btn btn-lg btn-primary">
+								Print Bill 
+								<span class="glyphicon glyphicon-print"></span>
+								&nbsp;
+							</button>
+					</div>
 				</div>
 
-				<div class="col-xs-4 text-right">
+				<div class="col-xs-2 text-right">
 					<h2>Total</h2>
 				</div>
 				<div class="col-xs-2 h3 text-primary bg-warning text-center">
@@ -233,6 +257,10 @@
 					}
 				}
 			});
+			function printed(){
+				window.scope.really_print = false;
+				
+			}
 			angular
 				.module('app',['ui.bootstrap'])
 				.controller("bodyController",['$scope', '$http', '$location', function($scope, $http, $location){
@@ -257,6 +285,7 @@
 					$scope.silver_rate = (s_rate) ? s_rate : "00.00";
 					$("#gold_rate").html($scope.gold_rate);
 					$("#silver_rate").html($scope.silver_rate);
+					$scope.really_print = false;
 
 					$scope.clearCart = function(){
 						$scope.cart = {};
