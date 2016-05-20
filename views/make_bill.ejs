@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="app">
+	<head>
+		<title>Cart</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
+		<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
+		<script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
+		<script src="/bower_components/angular/angular.js"></script>
+		<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+		<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+		<script src="/javascripts/numpad.js" type="text/javascript"></script>
+		<script src="/javascripts/includes.js" type="text/javascript"></script>
+	</head>
+	<body ng-controller="bodyController">
+	sdfsdfs sdbfjsfbh ksdhf jkshdf jksh fjkshfd
+	<%- title %>
+	-____----
+		<script type="text/javascript">
+			angular
+				.module('app',['ui.bootstrap'])
+				.controller("bodyController",['$scope', function($scope){
+					window.scope = $scope;
+					$scope.cart =JSON.parse((<%- JSON.stringify(post_data) %>).cart);
+					/*
+{"cart":{"additional_charges":55,"tax":0,"sales_articles":[{"_id":"5736d57bbec52c7837f627f7","netWeight":5.3,"grossWeight":5.2,"karat":14,"category":{"_id":"572ec3a3d05239110015523a","name":"Ring","metal":"Gold","__v":0,"image":""},"metal":"Gold","__v":0,"added":"2016-05-14T07:36:27.404Z","drawer":"Stock","wages":50,"$$hashKey":"object:32"},{"_id":"573efba26a51d0833799174a","netWeight":6,"grossWeight":6.2,"karat":24,"category":{"_id":"573efafa6a51d08337991748","name":"Toe Ring","metal":"Silver","__v":0,"image":""},"metal":"Silver","__v":0,"added":"2016-05-20T11:57:22.626Z","drawer":"Stock","wages":20,"$$hashKey":"object:18"}],"cust_name":"Prajankya","cust_contact":"7829545547","cust_address":"Saraf Bazaar, Chalisgaon"},"cartNo":"1","gold_rate":"2340","silver_rate":"350","sub_total":14627}
+					*/
+					console.log($scope.cart);
+			}]);
+		</script>
+	</body>
+</html>
