@@ -26,5 +26,14 @@ router.get('/cart', function(req, res, next) {
 	});
 });
 
+router.post('/make_bill', function(req, res, next) {
+	res.render('make_bill', {
+		title: 'make_bill',
+		post_data: req.body
+	});
+	console.log(req.body);
+});
+
+
 
 module.exports = router;
