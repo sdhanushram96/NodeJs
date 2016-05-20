@@ -199,7 +199,7 @@
 					<button ng-click="clearCart();" class="btn btn-md btn-danger"> Clear CART <span class="glyphicon glyphicon-trash"></span>&nbsp;</button>
 				</div>
 				<div class="col-xs-3 text-center">
-					<form method="POST" action="/make_bill">
+					<form method="post" target="print_popup" action="/make_bill" onsubmit="window.open('about:blank','print_popup','width=360,height=500');">
 						<input type="hidden" name="cart" ng-value="getCart()">
 						</input>
 						<button type="submit" class="btn btn-lg btn-primary">
@@ -243,7 +243,7 @@
 						New:"New",
 						Article:"Article",
 						Todays : "Today's",
-						"rate" : "rate",
+						rate : "rate",
 						grossWeight : "Gross Weight",
 						netWeight : "Net Weight",
 						Karat  : "Karat",
@@ -362,11 +362,14 @@
 					$scope.getCart = function(){
 						var j = {};
 						j.cart = $scope.cart;
+						for (var i = 0; i < $scope.cart.sales_articles.length; i++) {
+							j.cart.sales_articles[i].total = $scope.calc($scope.cart.sales_articles[i]);
+						}
 						j.cartNo = $location.path().split("/")[1];
 						j.gold_rate = $scope.gold_rate;
 						j.silver_rate = $scope.silver_rate;
 						j.sub_total = $scope.sub_total;
-						j.total = $scope.total;
+						j.total = $scope.Total_amount;
 						return JSON.stringify(j);
 					}
 					
