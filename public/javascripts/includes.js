@@ -1,4 +1,4 @@
-function getL($scope, word) {
+/*function getL($scope, word) {
 	return ($scope.lang == "mar") ? getMar($scope.locale, word) : word;
 }
 
@@ -31,7 +31,7 @@ function l(ar) {
 			}
 		});
 }
-
+*/
 function base64ArrayBuffer(arrayBuffer) {
 	var base64 = ''
 	var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'

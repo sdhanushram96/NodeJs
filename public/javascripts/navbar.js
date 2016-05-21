@@ -27,33 +27,24 @@
 				}
 			}
 			this.add = function(obj) {
-				this.list[obj.eng.replace(/ /g, '')] = obj; //escape obj.eng to cameltoe or remove spaces
+				this.list[obj.eng.replace(/\W/g, '')] = obj;
 				this.update();
 			}
-		})
-		.directive('includes', function() {
-			return {
-				restrict: 'E',
-				replace: true,
-				template: '<i>' +
-					'<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>' +
-					'<link href="/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet"/>' +
-					'</i>'
-			};
 		})
 		.directive('navbar', ['navbarSrv',
 			function(navbarSrv) {
 				return {
 					restrict: 'E',
 					transclude: true,
-					template: '<includes></includes>' +
-						'<style>body{padding:90px 40px}</style>' +
+					template: '<style>body{padding:90px 40px}</style>' +
 						'<nav class="navbar navbar-inverse navbar-fixed-top">' +
 						'<div class="row">' +
 						'<div class="col-xs-1 center-block text-right" style="padding:10px">' +
-						'<button class=" btn" onclick="window.history.back();">' +
+						'<div ng-show="!hideBack">' +
+						'<button class="btn" onclick="window.history.back();">' +
 						'<b>&#8678;</b> Back' +
 						'</button>' +
+						'</div>' +
 						'</div>' +
 						'<div class="row col-xs-10 text-muted" ng-transclude>' +
 						'</div>' +
@@ -62,6 +53,8 @@
 						'</div>' +
 						'</nav>',
 					link: function(scope, elem, attrs) {
+						scope.hideBack = (attrs.hideBack != undefined) ? attrs.hideBack : false;
+
 						angular.element(document).ready(function() {
 							var lang = Cookies.get("my_lang_settings");
 							//lang = "mar";
@@ -106,5 +99,3 @@
 			}
 		]);
 })(window, window.angular);
-
-//module.exports = 'navbar';
