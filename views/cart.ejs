@@ -200,9 +200,10 @@
 				</div>
 				<div class="col-xs-6 text-center">
 					<div ng-show="really_print">
-						<form method="post" target="print_popup" action="/make_bill" onsubmit="window.open('about:blank','print_popup','width=360,height=500');">
+						<form method="post" id="print_form" target="print_popup" action="/make_bill" onsubmit="window.open('about:blank','print_popup','width=360,height=500');">
 							<input type="hidden" name="cart" ng-value="getCart()">
 							</input>
+
 							<div class="row">
 								<div class="col-xs-4 text-danger">
 									<h2>
@@ -210,8 +211,8 @@
 									</h2>
 								</div>
 								<div class="col-xs-4">
-									<button type="submit" onclick="printed();" class="btn btn-lg btn-success">
-										Print
+									<button type="button" onclick="printed();" class="btn btn-lg btn-success">
+										<span id="yes_print">Print</span>{{bill_remaining}}
 										<span class="glyphicon glyphicon-print"></span>
 										&nbsp;
 									</button>
@@ -258,8 +259,47 @@
 				}
 			});
 			function printed(){
-				window.scope.really_print = false;
+				$("#yes_print")
+					.text("Printing...")
+					.attr("disabled","true");
+
+				var bill = JSON.parse(window.scope.getCart());
+				var cart = JSON.parse(window.scope.getCart());
+
 				
+				for (var i = 0; i < bill.sales_articles.length; i++) {
+					bill.sales_articles[i] = bill.sales_articles[i]._id;
+				}
+				window.scope.bill_remaining = cart.sales_articles.length + 2;
+
+				window
+					.http
+					.get("/api/bill_ids/generate")
+					.success(function(id){
+						window.scope.bill_remaining--;
+						bill.bill_no = id;
+						window
+							.http
+							.post("/api/bills", bill)
+							.success(function(data){
+								window.scope.bill_no = data.bill_no;
+								window.scope.bill_date = data.date;
+								window.scope.bill_remaining--;
+							});
+					});
+
+				angular.forEach(cart.sales_articles, function(article){
+					var d = {};
+					d.wages = article.wages;
+					d.cost = article.cost;
+					d.drawer = "Sales";
+					window
+						.http
+						.put("/api/stock/"+article._id, d)
+						.success(function(out){
+							window.scope.bill_remaining--;
+						});
+				});
 			}
 			angular
 				.module('app',['ui.bootstrap'])
@@ -287,12 +327,14 @@
 					$("#silver_rate").html($scope.silver_rate);
 					$scope.really_print = false;
 
+					var emptyCart = {
+							additional_charges :0,
+							tax : 0,
+							sales_articles: []
+						};
 					$scope.clearCart = function(){
-						$scope.cart = {};
-						$scope.cart.additional_charges = 0;
+						$scope.cart = emptyCart;
 						$scope.sub_total = 0;
-						$scope.cart.tax = 0;
-						$scope.cart.sales_articles = [];
 					}
 					$scope.goTo = function(cartNo){
 						window.location.href = "#/"+(cartNo);
@@ -300,8 +342,9 @@
 					}
 
 					$scope.calc = function(article){
-						return (article.netWeight * ((article.metal=="Gold") ? $scope.gold_rate : 
+						article.cost = (article.netWeight * ((article.metal=="Gold") ? $scope.gold_rate : 
 							$scope.silver_rate)) + article.wages;
+						return article.cost;
 					}
 					$scope.getTotal = function(cart){
 						var total = 0;
@@ -346,17 +389,21 @@
 							}
 							
 							$.get("/api/stock/"+id,function(s, r){
-								$scope.$apply(function() {
-									s.category.image = "";
-									$scope.cart.sales_articles.push(s);
-									setTimeout(function(){
-										$(".wages_txt").each(function(){
-											if(!$(this).attr("data-numpad")){
-												$(this).numpad();
-											}
-										});
-									}, 500);
-								});
+								if(s){
+									$scope.$apply(function() {
+										s.category.image = "";
+										$scope.cart.sales_articles.push(s);
+										setTimeout(function(){
+											$(".wages_txt").each(function(){
+												if(!$(this).attr("data-numpad")){
+													$(this).numpad();
+												}
+											});
+										}, 500);
+									});
+								}else{
+									alert("Wrong ID");
+								}
 							}).fail(function() {
 								alert("Wrong ID");
 							});
@@ -390,15 +437,18 @@
 					
 					$scope.getCart = function(){
 						var j = {};
-						j.cart = $scope.cart;
-						for (var i = 0; i < $scope.cart.sales_articles.length; i++) {
-							j.cart.sales_articles[i].total = $scope.calc($scope.cart.sales_articles[i]);
-						}
-						j.cartNo = $location.path().split("/")[1];
+						j.cust_name = $scope.cart.cust_name;
+						j.cust_address = $scope.cart.cust_address;
+						j.cust_contact = $scope.cart.cust_contact;
+						j.sales_articles = $scope.cart.sales_articles;
+						j.additional_charges = $scope.cart.additional_charges;
+						j.tax = $scope.cart.tax;
 						j.gold_rate = $scope.gold_rate;
 						j.silver_rate = $scope.silver_rate;
 						j.sub_total = $scope.sub_total;
 						j.total = $scope.Total_amount;
+						j.bill_no = $scope.bill_no;
+						j.bill_date = $scope.bill_date;
 						return JSON.stringify(j);
 					}
 					
@@ -443,6 +493,18 @@
 						$scope.doTotal();
 						Cookies.set($scope.cartName, JSON.stringify($scope.cart));
 						$scope.loadAllCarts();
+					}, true);
+
+					$scope.$watch('bill_remaining', function() {
+						if($scope.bill_remaining == 0){
+							setTimeout(function(){
+								Cookies.set($scope.cartName,JSON.stringify(emptyCart));
+								$("#print_form").submit();
+								setTimeout(function(){
+									window.location.reload();
+								},50);
+							},50);
+						}
 					}, true);
 
 					$(function(){

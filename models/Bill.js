@@ -5,6 +5,10 @@ var BillSchema = new mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
+	bill_no: {
+		type: String,
+		required: true
+	},
 	cust_name: {
 		type: String
 	},
@@ -14,12 +18,28 @@ var BillSchema = new mongoose.Schema({
 	cust_contact: {
 		type: Number
 	},
-	sold_articles: [
+	sales_articles: [
 		mongoose.Schema.Types.ObjectId
 	],
 	resell_articles: [
 		String //TODO added mood saaman
 	],
+	gold_rate: {
+		type: Number,
+		required: true
+	},
+	silver_rate: {
+		type: Number,
+		required: true
+	},
+	additional_charges: {
+		type: Number,
+		required: true
+	},
+	sub_total: {
+		type: Number,
+		required: true
+	},
 	total: {
 		type: Number,
 		required: true

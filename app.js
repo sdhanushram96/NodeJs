@@ -11,7 +11,11 @@ var sales = require('./routes/sales');
 var localizes = require('./routes/localizes');
 var categories = require('./routes/categories');
 var bills = require('./routes/bills');
+var bill_ids = require('./routes/bill_ids');
+
 var mongoose = require('mongoose');
+var HashID = require("./models/HashID.js");
+//HashID.generateUnique();
 
 mongoose.connect('mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery', function(err) {
   //mongoose.connect('mongodb://localhost/jewel', function(err) {
@@ -48,6 +52,7 @@ app.use('/api/sales', sales);
 app.use('/api/categories', categories);
 app.use('/api/localize', localizes);
 app.use('/api/bills', bills);
+app.use('/api/bill_ids', bill_ids);
 
 
 // catch 404 and forward to error handler

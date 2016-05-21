@@ -36,6 +36,10 @@ var ArticleSchema = new mongoose.Schema({
 		type: Number,
 		required: true
 	},
+	cost: {
+		type: Number,
+		default: 0
+	},
 	added: {
 		type: Date,
 		default: Date.now

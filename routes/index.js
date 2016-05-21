@@ -31,7 +31,6 @@ router.post('/make_bill', function(req, res, next) {
 		title: 'make_bill',
 		post_data: req.body
 	});
-	console.log(req.body);
 });
 
 
