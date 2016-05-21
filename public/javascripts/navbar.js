@@ -1,7 +1,7 @@
 (function(window, angular) {
 	'use strict';
 
-	angular.module('navbar.toggle', [])
+	angular.module('navbar', [])
 		.constant('jQuery', window.jQuery)
 		.service('navbarSrv', function() {
 			this.list = {};
@@ -9,7 +9,9 @@
 			this.setLang = function(isEng) {
 				this.isEng = isEng;
 			}
-
+			this.setScope = function(scope) {
+				scope.l = this.list;
+			}
 			this.update = function() {
 				//var key in obj  \n if obj.hasOwnProperty(key)
 				var keys = Object.getOwnPropertyNames(this.list);
@@ -18,12 +20,7 @@
 					ob.val = this.isEng ? ob.eng : ob.mar;
 				}
 			}
-			this.setList = function(scope, ls) {
-				this.list = scope.l;
-				var that = this;
-				scope.$watch('l', function() { //to watch change in number
-					that.update();
-				});
+			this.addList = function(ls) {
 				for (var i = 0; i < ls.length; i++) {
 					//scope_list[ls[i].eng] = ls[i];
 					this.add(ls[i]);
@@ -31,7 +28,7 @@
 			}
 			this.add = function(obj) {
 				this.list[obj.eng] = obj; //escape obj.eng to cameltoe or remove spaces
-				console.log(this.list);
+				this.update();
 			}
 		})
 		.directive('includes', function() {
@@ -44,15 +41,24 @@
 					'</i>'
 			};
 		})
-		.directive('toggleBtn', ['navbarSrv',
+		.directive('navbar', ['navbarSrv',
 			function(navbarSrv) {
 				return {
 					restrict: 'E',
 					replace: true,
-					template: '<div>' +
+					template: '<nav class="navbar navbar-inverse navbar-fixed-top">' +
 						'<includes></includes>' +
+						'<div class="container-fluid">' +
+						'<div class="navbar-header">' +
+						'<button class=" btn" style="margin-top:8px;" onclick="window.history.back();">' +
+						'<b>&#8678;</b> Back' +
+						'</button>' +
+						'</div>' +
+						'<div class="nav navbar-nav navbar-right" style="padding: 10px;">' +
 						'<input type="checkbox" id="langToggle">' +
-						'</div>',
+						'</div>' +
+						'</div>' +
+						'</nav>',
 					link: function(scope, elem, attrs) {
 						angular.element(document).ready(function() {
 							var lang = Cookies.get("my_lang_settings");
@@ -86,9 +92,19 @@
 						});
 					},
 					controller: function($scope, $http) {
-						/*if (!$scope.l) {
-							$scope.l = {}
-						};
+						setTimeout(function() {
+							$scope.$apply(function() {
+								var ls = [{
+									eng: "Gold",
+									mar: "sona"
+								}, {
+									eng: "Silver",
+									mar: "chandi"
+								}];
+								navbarSrv.addList(ls);
+							});
+						}, 1000);
+						/*
 						$http
 							.get("/api/localize")
 							.success(function(data) {
@@ -100,31 +116,9 @@
 								console.error(data);
 							});*/
 					}
-				}
-			}
-		])
-	/*.controller('toggleControl', ['$scope', '$http',
-			function($scope, $http) {
-				if (!$scope.l) {
-					$scope.l = {}
 				};
-
-				$http
-					.get("/api/localize")
-					.success(function(data) {
-						for (var i = 0; i < data.length; i++) {
-							$scope.l[data[i].eng] = data[i];
-						}
-						//console.log($scope.l);
-					}).error(function(err) {
-						console.error(data);
-					});
 			}
-		]);*/
-	/*angular.module('navbar', [
-		'navbar.toggle'
-	])*/
-
+		]);
 })(window, window.angular);
 
 //module.exports = 'navbar';
