@@ -27,7 +27,7 @@
 				}
 			}
 			this.add = function(obj) {
-				this.list[obj.eng] = obj; //escape obj.eng to cameltoe or remove spaces
+				this.list[obj.eng.replace(/ /g, '')] = obj; //escape obj.eng to cameltoe or remove spaces
 				this.update();
 			}
 		})
@@ -45,18 +45,19 @@
 			function(navbarSrv) {
 				return {
 					restrict: 'E',
-					replace: true,
-					template: '<nav class="navbar navbar-inverse navbar-fixed-top">' +
-						'<includes></includes>' +
-						'<div class="container-fluid">' +
-						'<div class="navbar-header">' +
-						'<button class=" btn" style="margin-top:8px;" onclick="window.history.back();">' +
+					transclude: true,
+					template: '<includes></includes>' +
+						'<nav class="navbar navbar-inverse navbar-fixed-top">' +
+						'<div class="row">' +
+						'<div class="col-xs-1 center-block text-right" style="padding:10px">' +
+						'<button class=" btn" onclick="window.history.back();">' +
 						'<b>&#8678;</b> Back' +
 						'</button>' +
 						'</div>' +
-						'<div class="nav navbar-nav navbar-right" style="padding: 10px;">' +
-						'<input type="checkbox" id="langToggle">' +
+						'<div class="row col-xs-10 text-muted" ng-transclude>' +
 						'</div>' +
+						'<div class="col-xs-1" style="padding: 10px;">' +
+						'<input type="checkbox" id="langToggle">' +
 						'</div>' +
 						'</nav>',
 					link: function(scope, elem, attrs) {
@@ -92,29 +93,13 @@
 						});
 					},
 					controller: function($scope, $http) {
-						setTimeout(function() {
-							$scope.$apply(function() {
-								var ls = [{
-									eng: "Gold",
-									mar: "sona"
-								}, {
-									eng: "Silver",
-									mar: "chandi"
-								}];
-								navbarSrv.addList(ls);
-							});
-						}, 1000);
-						/*
 						$http
 							.get("/api/localize")
 							.success(function(data) {
-								for (var i = 0; i < data.length; i++) {
-									$scope.l[data[i].eng] = data[i];
-								}
-								console.log($scope.l);
+								navbarSrv.addList(data);
 							}).error(function(err) {
 								console.error(data);
-							});*/
+							});
 					}
 				};
 			}
