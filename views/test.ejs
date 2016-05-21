@@ -20,12 +20,12 @@
 			
 			{{l.xAsedfTest.val}}
 			{{l.y.val}}
-		</h1>
+		
 		<script type="text/javascript">
 			angular.module('app', [
 				'navbar'
 	    	])
-	    	.controller('mainController', ['$scope','navbarSrv', function($scope, navbar){
+	    	.controller('mainController', ['$scope', 'navbarSrv', function($scope, navbar){
     			navbar.setScope($scope);
 				navbar.add({
 					eng: "x A sedf Test",

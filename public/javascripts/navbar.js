@@ -76,7 +76,6 @@
 							toggle.change(function() {
 								scope.$apply(function() {
 									var isEng = $('#langToggle').prop('checked');
-									//scope.lang = isEng ? "eng" : "mar";
 									navbarSrv.setLang(isEng);
 									navbarSrv.update();
 									Cookies.set("my_lang_settings", isEng ? "eng" : "mar");

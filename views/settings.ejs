@@ -14,7 +14,8 @@
 		 
 	    <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
 		<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
-
+		<script type="text/javascript" src="/javascripts/navbar.js"></script>
+		
 		<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
 		<script src="/javascripts/numpad.js" type="text/javascript"></script>
 		<script src="/javascripts/includes.js" type="text/javascript"></script>
@@ -26,23 +27,15 @@
 		</style>
   	</head>
 	<body>
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-			<div class="container-fluid">
-				<div class="navbar-header">
-	      			<button class=" btn" style="margin-top:8px;" onclick="window.history.back();">
-						<b>&#8678;</b> Back
-					</button>
-				</div>
-				<div class="nav navbar-nav navbar-right" style="padding: 10px;">
-					<input type="checkbox" id="langToggle">
-				</div>
-			</div>
+		<navbar>
+			
+		</navbar>
+
 		</nav>
 
 		<ng-view></ng-view>
 
 		<script type="text/ng-template" id="/home.html">
-		<br><br>
 			<div class="jumbotron">
 				<h2>Settings :</h2>
 				<button class="button btn-lg btn-primary" onclick="window.location.href='#/backup_restore'">Backup and Restore</button>
@@ -50,7 +43,6 @@
 		</script>
 		
 		<script type="text/ng-template" id="/backup_restore.html">
-			<br><br>
 			<div class="jumbotron">
 				<h2>backup_restore :</h2>
 			</div>
@@ -91,7 +83,8 @@
 			});
 			angular.module('app', [
 				'ngRoute',
-	    		'ui.bootstrap'
+	    		'ui.bootstrap',
+				'navbar'
 	    	])
 	    	.config(['$routeProvider', function ($routeProvider) {
 			    $routeProvider
@@ -104,28 +97,24 @@
 			        	controller: 'backResController'
 			      	})
 			}])
-			.controller('homeController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
-				window.scope = $scope;
-				window.http = $http;
-				
-				var lang = Cookies.get("my_lang_settings");
+			.controller('homeController', ['$scope', 'navbarSrv', function ($scope, navbar) {
+				navbar.setScope($scope);
+				/*var lang = Cookies.get("my_lang_settings");
 				if(window.scope.lang != lang){
 					window.scope.lang = lang;
 				}
 				
-				l([{gold:"Gold", silver:"Silver", New:"New", Article:"Article"}]);
+				l([{gold:"Gold", silver:"Silver", New:"New", Article:"Article"}]);*/
 			}])
-			.controller('backResController', ['$location', '$scope', '$http', function ($location, $scope, $http) {
-				window.scope = $scope;
-				window.http = $http;
-				
-				var lang = Cookies.get("my_lang_settings");
+			.controller('backResController', ['$scope', 'navbarSrv', function ($scope, navbar) {
+				navbar.setScope($scope);
+				/*var lang = Cookies.get("my_lang_settings");
 				if(window.scope.lang != lang){
 					window.scope.lang = lang;
 				}
 				
-				l([{gold:"Gold", silver:"Silver", New:"New", Article:"Article"}]);
-			}]);
+				l([{gold:"Gold", silver:"Silver", New:"New", Article:"Article"}]);*/
+			}])
 		</script>
 	</body>
 </html>

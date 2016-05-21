@@ -14,8 +14,6 @@ var bills = require('./routes/bills');
 var bill_ids = require('./routes/bill_ids');
 
 var mongoose = require('mongoose');
-var HashID = require("./models/HashID.js");
-//HashID.generateUnique();
 
 mongoose.connect('mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery', function(err) {
   //mongoose.connect('mongodb://localhost/jewel', function(err) {
