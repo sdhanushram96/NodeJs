@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="mainController">
+	<head>
+		<title> Hello </title>
+		<script src="/bower_components/angular/angular.js"></script>
+		<script type="text/javascript" src="/javascripts/navbar.js"></script>
+		<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
+	    <script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
+		<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+		
+	</head>
+	<body>
+		<!--<toggle-btn ng-controller="toggleControl"></toggle-btn>-->
+		
+		<toggle-btn></toggle-btn>
+
+		<br>sdsf<br>
+		sdfsdf
+		<h1>
+			{{gold}}
+			{{l.Gold.val}}
+			{{l.x-a.val}}
+		</h1>
+		<hello-world></hello-world>
+		<script type="text/javascript">
+		var ls=[
+			{
+				eng:"Gold",
+				mar: "sona"
+			},
+			{
+				eng:"Silver",
+				mar:"chandi"
+			}
+		]
+			angular.module('app', [
+				'navbar.toggle'
+	    	])
+	    	.controller('mainController', ['$scope','navbarSrv', function($scope, v){
+	    		setTimeout(function(){
+					$scope.$apply(function(){
+						$scope.l = {};
+	    				v.setList($scope, ls);
+	    				v.add({eng:"x a",mar:"hahaha"});
+		    		});
+		    		
+				},1000);
+				$scope.$watch('lang',function(){
+					//console.log($scope.x);
+					//console.log($scope.lang);
+				});
+			}]);
+		</script>
+	</body>
+</html>
