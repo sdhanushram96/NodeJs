@@ -44,7 +44,7 @@
 					
       				<span style="color: white;
       				font-size:24px;position:relative;top:8px;left:20px;">
-      					Stock
+      					<%= title %>
       				</span>
     			</div>
 				<div class="nav navbar-nav navbar-right" style="padding: 10px;">
@@ -136,7 +136,9 @@
 							</div>
 						</div>
 						<div class="col-xs-1 check">
+							<!--
 							<input type="checkbox" class="input20" data-theme="krajee-flatblue" data-toggle="checkbox-x" value="0" data-three-state="false"  data-size="xl">
+							-->
 						</div>
 					</div>
   				</li>
@@ -150,6 +152,8 @@
 					window.scope = $scope;
 					window.http = $http;
 
+					$scope.drawer = "<%= title %>";
+					
 					l([{
 						New			: "New",
 						Article 	: "Article",
@@ -200,7 +204,7 @@
 					});
 					$scope.articles = [];
 					$http
-						.get("/api/stock/")
+						.get("/api/"+$scope.drawer+"/")
 						.success(function(articles) {
 							window.names = [];
 

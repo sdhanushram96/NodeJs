@@ -63,18 +63,23 @@
 				</div>
 			</div>
 			<div class="row text-center">
-				<div class="col-xs-4">
-					<button onclick="gotoAdd()" class="btn btn-primary btn-lg">
+				<div class="col-xs-3">
+					<button onclick="goto('add')" class="btn btn-primary btn-lg">
 						{{New}} {{Article}}
 					</button>
 				</div>
-				<div class="col-xs-4">
-					<button onclick="gotoStock()" class="btn btn-primary btn-lg">
+				<div class="col-xs-3">
+					<button onclick="goto('stock')" class="btn btn-primary btn-lg">
 						Stock
 					</button>
 				</div>
-				<div class="col-xs-4">
-					<button onclick="gotoCart()" class="btn btn-primary btn-lg">
+				<div class="col-xs-3">
+					<button onclick="goto('sales')" class="btn btn-primary btn-lg">
+						Sales
+					</button>
+				</div>
+				<div class="col-xs-3">
+					<button onclick="goto('cart')" class="btn btn-primary btn-lg">
 						Cart
 					</button>
 				</div>
@@ -162,15 +167,8 @@
 					});
 			}]);
 
-			function gotoAdd(){
-				window.location.href = "/add";	
-			}
-
-			function gotoStock(){
-				window.location.href = "/stock";
-			}
-			function gotoCart(){
-				window.location.href = "/cart";
+			function goto(loc){
+				window.location.href = "/"+loc;
 			}
 		</script>
 	</body>
