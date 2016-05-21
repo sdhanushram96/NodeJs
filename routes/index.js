@@ -14,6 +14,12 @@ router.get('/add', function(req, res, next) {
 	});
 });
 
+router.get('/settings', function(req, res, next) {
+	res.render('settings', {
+		title: 'Settings'
+	});
+});
+
 router.get('/stock', function(req, res, next) {
 	res.render('drawer', {
 		title: 'stock'
