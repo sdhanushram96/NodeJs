@@ -13,18 +13,26 @@ router.get('/', function(req, res, next) {
 	back(res, null);
 });
 
+router.get('/default', function(req, res, next) {
+	res.writeHead(200, {
+		'Content-Type': 'application/x-tar',
+		'Content-disposition': 'attachment; filename=default-' + date + '.tar'
+	});
+	back(res, ['localizes', 'categories']);
+});
+
 router.get('/:collection', function(req, res, next) {
 	res.writeHead(200, {
 		'Content-Type': 'application/x-tar',
 		'Content-disposition': 'attachment; filename=' + req.params.collection + '-' + date + '.tar'
 	});
-	back(res, req.params.collection);
+	back(res, [req.params.collection]);
 });
 
 function back(res, col) {
 	var cols = [];
 	if (col) {
-		cols.push(col);
+		cols = col;
 	} else {
 		cols.push("localizes");
 		cols.push("categories");
