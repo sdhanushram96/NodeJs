@@ -141,26 +141,26 @@
 
 		<script type="text/ng-template" id="/add_info.html">
 			<div class="container">
-				<h2>{{New}} {{Article}} </h2>
+				<h2>{{l.New.val}} {{l.Article.val}} </h2>
 				<form class="form-horizontal" ng-submit="submitForm()" role="form">
 					<div class="row">
 						<div class="col-xs-10 col-lg-10">
 							<div class="form-group">
-			    				<label class="control-label	col-lg-3" for="metalTxt">Metal:</label>
+			    				<label class="control-label	col-lg-3" for="metalTxt">{{l.Metal.val}}:</label>
 							    <div class="col-lg-9">
-									<input type="text" disabled="true" class="input-lg form-control" id="metalTxt" value="{{metal}}">
+									<input type="text" disabled="true" class="input-lg form-control" id="metalTxt" ng-value="(metal=='Gold')?l.Gold.val:l.Silver.val">
 								</div>
 			  				</div>
 			  				
 			  				<div class="form-group">
-			    				<label class="control-label col-lg-3" for="categoryTxt">Category:</label>
+			    				<label class="control-label col-lg-3" for="categoryTxt">{{l.Category.val}}:</label>
 							    <div class="col-lg-9">
 									<input type="text" disabled="true" class="input-lg form-control" id="categoryTxt" value="{{category_name}}">
 								</div>
 			  				</div>
 			  				
 			  				<div class="form-group">
-			    				<label class="control-label	col-lg-3" for="wagesTxt">{{Wages}} : </label>
+			    				<label class="control-label	col-lg-3" for="wagesTxt">{{l.Wages.val}} : </label>
 							    <div class="col-lg-8">
 									<input type="text" ng-model="wagesVal" name="wages" class="input-lg form-control" id="wagesTxt" value="0">
 								</div>
@@ -168,29 +168,29 @@
 									&#8377;<!--rupees-->
 								</span>
 			  				</div>
-			  				
 			  				<div class="form-group">
-			    				<label class="control-label	col-lg-3" for="netweightTxt">{{netWeight}} : </label>
-							    <div class="col-lg-8">
-									<input type="text" ng-model="netweightVal" name="netweight" class="input-lg form-control" id="netweightTxt" required="true" >
-								</div>
-								<span class="col-lg-1">
-									{{weight_unit}}
-								</span>
-			  				</div>
-			  				
-			  				<div class="form-group">
-			    				<label class="control-label	col-lg-3" for="grossweightTxt">{{grossWeight}} : </label>
+			    				<label class="control-label	col-lg-3" for="grossweightTxt">{{l.Grossweight.val}} : </label>
 							    <div class="col-lg-8">
 									<input type="text" ng-model="grossweightVal" name="grossweight" class="input-lg form-control" id="grossweightTxt" required="true">
 								</div>
 								<span class="col-lg-1">
-									{{weight_unit}}
+									{{l.grams.val}}
 								</span>
 			  				</div>
 			  				
 			  				<div class="form-group">
-			    				<label class="control-label	col-lg-3" for="karatTxt">{{Karat}} : </label>
+			    				<label class="control-label	col-lg-3" for="netweightTxt">{{l.Netweight.val}} : </label>
+							    <div class="col-lg-8">
+									<input type="text" ng-model="netweightVal" name="netweight" class="input-lg form-control" id="netweightTxt" required="true" >
+								</div>
+								<span class="col-lg-1">
+									{{l.grams.val}}
+								</span>
+			  				</div>
+			  				
+			  				
+			  				<div class="form-group">
+			    				<label class="control-label	col-lg-3" for="karatTxt">{{l.Karat.val}} : </label>
 							    <div class="col-lg-9">
 									<input type="text" ng-model="karatVal" name="karat" class="input-lg form-control" id="karatTxt" required="true">
 								</div>
@@ -203,7 +203,7 @@
 	  				</div>
 	  				<input type="hidden"  name="metal" value="{{metal_eng}}"></input>
 	  				<input type="hidden"  name="category" value="{{category_id}}"></input>
- 	  				<button type="submit" id="sbt_btn" class="center-block btn btn-primary btn-lg">Submit</button>
+ 	  				<button type="submit" id="sbt_btn" class="center-block btn btn-primary btn-lg">{{l.Submit.val}}</button>
 	  			</form>
 			</div>
 		</script>
@@ -276,13 +276,6 @@
 				$scope.metal = a[1];
 				$scope.metal_eng = a[1];
 				
-
-				/*l([{New:"New", Category:"Category", metal:a[1]}]);
-				var lang = Cookies.get("my_lang_settings");
-				if(window.scope.lang != lang){
-					window.scope.lang = lang;
-				}*/
-				
 				$scope.submitForm = function() {
 					$("#sbt_btn").html("Uploading...").attr("disabled","true");
 					var eng = $scope.engVal;
@@ -294,7 +287,6 @@
 					obj.metal = $scope.metal_eng;
 					obj.image.contentType = window.mime;
 					obj.image.data = data_uri;
-					//obj = JSON.stringify(obj);
 					$.ajax({
 						url: '/api/categories',
 						type: 'POST',
@@ -322,29 +314,20 @@
 					});
 				};
 			}])
-			.controller('add_infoController', ['$location', '$scope', '$http', 'navbarSrv', function ($location, $scope, $http) {
-				window.scope = $scope;
-				window.http = $http;
-				
+			.controller('add_infoController', ['$location', '$scope', '$http', 'navbarSrv', function ($location, $scope, $http, navbar) {
+				navbar.setScope($scope);
+
 				var a=($location.path().split("/"));
 				$http
 					.get("/api/categories/"+a[2])
 					.success(function(data){
 						$scope.metal_eng = a[1];
 						$scope.category_id = data._id;
+						$scope.category_name = $scope.l[data.name.replace(/\W/g, '')].val;
+
 						$scope.category_src ="data:image/png;base64," + base64ArrayBuffer(data.image.data.data);;
-						l([{ metal:a[1], 
-							category_name: data.name, 
-							Wages:"Wages", 
-							weight_unit:"grams", 
-							New:"New", 
-							Article:"Article",
-							grossWeight : "Gross Weight",
-							netWeight : "Net Weight",
-							Karat : "Karat"
-						}]);
 						
-						$(function(){
+						//$(function(){
 							$scope.weightVal = 0.0;
 							$scope.wagesVal = 0;
 							$("#wagesTxt").numpad();
@@ -353,7 +336,7 @@
 							$("#netweightTxt").numpad();
 							$("#grossweightTxt").numpad();
 
-						});
+						//});
 						$scope.submitForm = function() {
 
 							$("#sbt_btn").html("Adding...").attr("disabled","true");
