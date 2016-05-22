@@ -6,8 +6,12 @@
 		.service('navbarSrv', function() {
 			this.list = {};
 			this.isEng = 'mar';
+			this.evt = document.createEvent("Event");
+			this.evt.initEvent('languageChanged', true, true);
+
 			this.setLang = function(isEng) {
 				this.isEng = isEng;
+				this.update();
 			}
 			this.setScope = function(scope) {
 				scope.l = this.list;
@@ -19,6 +23,8 @@
 					var ob = this.list[keys[i]];
 					ob.val = this.isEng ? ob.eng : ob.mar;
 				}
+				this.evt.isEng = this.isEng;
+				document.dispatchEvent(this.evt);
 			}
 			this.addList = function(ls) {
 				for (var i = 0; i < ls.length; i++) {
@@ -70,14 +76,12 @@
 
 							}
 							navbarSrv.setLang(lang == 'eng');
-							navbarSrv.update();
 							angular.element("#backTxt").text((lang == 'eng') ? "Back" : "मागे जा");
 
 							toggle.change(function() {
 								scope.$apply(function() {
 									var isEng = $('#langToggle').prop('checked');
 									navbarSrv.setLang(isEng);
-									navbarSrv.update();
 									angular.element("#backTxt").text(
 										isEng ? navbarSrv.list["Back"].eng : navbarSrv.list["Back"].mar);
 									Cookies.set("my_lang_settings", isEng ? "eng" : "mar");

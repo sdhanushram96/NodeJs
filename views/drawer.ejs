@@ -126,9 +126,6 @@
 				])
 				.controller("bodyController",['$scope', '$http', 'navbarSrv',function($scope, $http, navbar){
 					navbar.setScope($scope);
-					setTimeout(function(){
-					//	console.log(navbar.list);
-					},1000);
 					$scope.drawer = "<%= title %>";
 					/*
 					l([{
@@ -180,45 +177,34 @@
 */
 						
 					});
+					document.addEventListener("languageChanged",function(e){
+						for (var i = 0; i < $scope.eng_ids.length; i++) {
+							$scope.articles[i].category_name = $scope.l[$scope.eng_ids[i]].val;
+						}
+					});
+					$scope.eng_ids = [];
 					$scope.articles = [];
 					$http
 						.get("/api/"+$scope.drawer+"/")
 						.success(function(articles) {
 							angular.forEach(articles, function(article, key){
-										var dt = new Date(article.added);
-			$scope.articles[key] = {};
-			$scope.articles[key].netWeight = article.netWeight;
-			$scope.articles[key].grossWeight = article.grossWeight;
-			$scope.articles[key].karat = article.karat;
-			$scope.articles[key].id = article._id;
-			$scope.articles[key].metal = article.metal;
-			$scope.articles[key].added = dt.format("h:MM:ss tt d-mmm-yy");
-			$scope.articles[key].wages = article.wages;
-			//window.names.push(category.name);
-			$scope.articles[key].metal = article.metal;
-//Search for Binding two variables
-			
+								var dt = new Date(article.added);
+								$scope.articles[key] = {};
+								$scope.articles[key].netWeight = article.netWeight;
+								$scope.articles[key].grossWeight = article.grossWeight;
+								$scope.articles[key].karat = article.karat;
+								$scope.articles[key].id = article._id;
+								$scope.articles[key].metal = article.metal;
+								$scope.articles[key].added = dt.format("h:MM:ss tt d-mmm-yy");
+								$scope.articles[key].wages = article.wages;
+								$scope.articles[key].metal = article.metal;
+
 								$http
 									.get("/api/categories/"+article.category)
 									.success(function(category){
-										if($scope.l[category.name]){
-$scope.articles[key].category_name = $scope.l[category.name].val;
-										}else{
-$scope.articles[key].category_name = category.name;
-											/*
-console.log(navbar.add({eng:category.name,
-												mar:category.name})
-											);
-											console.log(category.name);
-											*/
-										}
-$scope.articles[key].category_src = base64ArrayBuffer(category.image.data.data);
-$scope.articles[key].bgClass = "list-group-item-"+((article.metal == "Gold")?"warning":"info");
-/*
-			
-			
-			
-			*/
+										$scope.articles[key].category_name = $scope.l[category.name.replace(/\W/g, '')].val;
+										$scope.eng_ids[key] = category.name.replace(/\W/g, '');
+										$scope.articles[key].bgClass = "list-group-item-"+((article.metal == "Gold")?"warning":"info");
 									});
 							});
 					});
