@@ -2,16 +2,21 @@ var express = require('express');
 var router = express.Router();
 var backup = require('mongodb-backup');
 
+var now = new Date();
+var date = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + "_" + now.getHours() + "-" + now.getMinutes();
+
 router.get('/', function(req, res, next) {
 	res.writeHead(200, {
-		'Content-Type': 'application/x-tar'
+		'Content-Type': 'application/x-tar',
+		'Content-disposition': 'attachment; filename=backup-' + date + '.tar'
 	});
 	back(res, null);
 });
 
 router.get('/:collection', function(req, res, next) {
 	res.writeHead(200, {
-		'Content-Type': 'application/x-tar'
+		'Content-Type': 'application/x-tar',
+		'Content-disposition': 'attachment; filename=' + req.params.collection + '-' + date + '.tar'
 	});
 	back(res, req.params.collection);
 });
