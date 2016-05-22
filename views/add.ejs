@@ -59,7 +59,7 @@
 		  			<button ng-click="onCat()" class="btn btn-primary btn-md">{{l.AddanewCategory.val}} </button>
 		  		</div>
 			  	
-		  		<h2>{{l.New.val}} {{metal="Gold"?l.Gold.val:l.Silver.val}} {{l.Article.val}} {{l.Category.val}}:</h2>
+		  		<h2>{{l.New.val}} {{metal=="Gold"?l.Gold.val:l.Silver.val}} {{l.Article.val}} :</h2>
 				<div ng-repeat="card in categories">
 					<a ng-href="/add/#/{{metal_eng}}/{{card._id}}" >
 						<div class="btn {{btnClass}} col-xs-8 col-sm-4 col-md-2 col-lg-2" style="margin :5px;">
@@ -257,11 +257,11 @@
 				$scope.onCat = function (){
 					window.location.href='#/'+$scope.metal_eng+'/addCategory';
 				}
-
+				
 				$http.get('/api/categories/'+a[1]).success(function(data){
 	        		$scope.categories = data;
 	        		for (var i = 0; i < data.length; i++) {
-	        			$scope.categories[i].name = $scope.l[data[i].name].val;
+	        			$scope.categories[i].name = $scope.l[data[i].name.replace(/\W/g, '')].val;
 	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
 	        		}
 	      		}).error(function(data, status){
