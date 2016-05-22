@@ -1,3 +1,6 @@
+global.db = 'mongodb://localhost/jewel';
+//global.db = 'mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -12,18 +15,16 @@ var localizes = require('./routes/localizes');
 var categories = require('./routes/categories');
 var bills = require('./routes/bills');
 var bill_ids = require('./routes/bill_ids');
-
+var backup = require('./routes/backup');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery', function(err) {
-  //mongoose.connect('mongodb://localhost/jewel', function(err) {
+mongoose.connect(global.db, function(err) {
   if (err) {
     console.log('connection error', err);
   } else {
     console.log('connection successful');
   }
 });
-
 
 var app = express();
 
@@ -51,6 +52,7 @@ app.use('/api/categories', categories);
 app.use('/api/localize', localizes);
 app.use('/api/bills', bills);
 app.use('/api/bill_ids', bill_ids);
+app.use('/api/backup', backup);
 
 
 // catch 404 and forward to error handler
@@ -80,7 +82,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
-    error: {}
+    error: err
   });
 });
 
