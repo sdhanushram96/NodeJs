@@ -17,6 +17,7 @@
 		<script src="/javascripts/numpad.js" type="text/javascript"></script>
 		<script src="/javascripts/includes.js" type="text/javascript"></script>
 		<script type="text/javascript" src="/javascripts/navbar.js"></script>
+		
 		<script src="/javascripts/date.format.js" type="text/javascript"></script>
 		<style>
 			@media print
@@ -37,17 +38,17 @@
 			<h2>S. S. S.</h2>
 			<div class="row">
 				<div class="pad col-xs-5 text-left">
-						Bill No. {{cart.bill_no}}
+						{{l.BillNo.val}}.: {{cart.bill_no}}
 				</div>
 				<div class="col-xs-7 text-right">
 						{{bill_date}}
 				</div>
 			</div>
 			<div class="pad row text-left">
-				<h4>Name : {{cart.cust_name}}</h4>
+				<h4>{{l.Name.val}} : {{cart.cust_name}}</h4>
 			</div>
 			<div class="pad row text-left">
-				Address : {{cart.cust_address}}
+				{{l.Address.val}} : {{cart.cust_address}}
 			</div>
 			<table class="table">
     			<thead>
@@ -63,6 +64,8 @@
 				<tbody>
 					<tr ng-repeat="article in cart.sales_articles">
 						<td>
+							{{l["Gold"].val=="Gold"?"Eng":"Mar"}} 
+							
 							{{article.category.name}}
 						</td>
 						<td>
@@ -85,7 +88,7 @@
 			</table>
 			<div class="row">
 				<div class="col-xs-9 text-right">
-					Additional Charges(stones, etc):
+					{{l.AdditionalCharges.val}}:
 				</div>
 				<div class="col-xs-3 text-right">
 					{{cart.additional_charges}}
@@ -93,7 +96,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-9 text-right">
-					Sub Total:
+					{{l.Subtotal.val}}:
 				</div>
 				<div class="col-xs-3 text-right">
 					{{cart.sub_total}}
@@ -102,7 +105,7 @@
 			<div ng-if="cart.tax != 0">
 				<div class="row">
 					<div class="col-xs-9 text-right">
-						Tax:
+						{{l.Tax.val}}:
 					</div>
 					<div class="col-xs-3 text-right">
 						{{cart.tax}}
@@ -111,7 +114,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-9 text-right">
-					<b>Total:</b>
+					<b>{{l.Total.val}}:</b>
 				</div>
 				<div class="col-xs-3 text-right">
 					<b>{{cart.total | currency:"&#8377;":2}}</b>
@@ -122,11 +125,17 @@
 			<br>
 			<div>
 			_________________<br>
-				Signature
+			{{l.Signature.val}}
 			</div>
 
 			<br>
 			<br>
+			<navbar class="no-print hide"></navbar>
+			<style>
+				body{
+					padding: 10px;
+				}
+			</style>
 			<button class="btn btn-primary btn-lg no-print" onclick="window.close();">
 				Close
 			</button>
@@ -135,18 +144,26 @@
 			angular
 				.module('app',[
 					'ui.bootstrap',
-					'navbar'
+					'navbar',
 				])
 				.controller("bodyController",['$scope', '$http', 'navbarSrv', function($scope, $http, navbar){
-					window.scope = $scope;
-					window.http = $http;
-					
+					navbar.setScope($scope);
+
 					$scope.cart = JSON.parse((<%- JSON.stringify(post_data) %>).cart);
 
 					var dt = new Date($scope.cart.bill_date);
 					
 					$scope.bill_date = dt.format("h:MM:ss tt d-mmm-yy");
-
+/*
+SCOPE NOT VISIBLE HERE 
+					setTimeout(function(){
+						for(var i =0; i < $scope.cart.sales_articles.length;i++){
+							var na=$scope.cart.sales_articles[i].category.name.replace(/\W/g, '');
+							console.log($scope.l["Gold"]);
+							console.log(($scope.l));
+						//	$scope.cart.sales_articles[i].category.name = $scope.l[$scope.cart.sales_articles[i].category.name.replace(/\W/g, '')].val;
+						}
+					},50);*/
 					if(window.print){
 						setTimeout(function(){
 							window.print();
