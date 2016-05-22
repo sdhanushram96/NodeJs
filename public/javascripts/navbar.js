@@ -42,7 +42,7 @@
 						'<div class="col-xs-1 center-block text-right" style="padding:10px">' +
 						'<div ng-show="!hideBack">' +
 						'<button class="btn" onclick="window.history.back();">' +
-						'<b>&#8678;</b> Back' +
+						'<b>&#8678;</b> <span id="backTxt">{{l.Back.val}}</span>' +
 						'</button>' +
 						'</div>' +
 						'</div>' +
@@ -54,10 +54,9 @@
 						'</nav>',
 					link: function(scope, elem, attrs) {
 						scope.hideBack = (attrs.hideBack != undefined) ? attrs.hideBack : false;
-
 						angular.element(document).ready(function() {
 							var lang = Cookies.get("my_lang_settings");
-							//lang = "mar";
+
 							if (!lang) {
 								Cookies.set("my_lang_settings", "mar");
 								lang = Cookies.get("my_lang_settings");
@@ -72,12 +71,15 @@
 							}
 							navbarSrv.setLang(lang == 'eng');
 							navbarSrv.update();
+							angular.element("#backTxt").text((lang == 'eng') ? "Back" : "मागे जा");
 
 							toggle.change(function() {
 								scope.$apply(function() {
 									var isEng = $('#langToggle').prop('checked');
 									navbarSrv.setLang(isEng);
 									navbarSrv.update();
+									angular.element("#backTxt").text(
+										isEng ? navbarSrv.list["Back"].eng : navbarSrv.list["Back"].mar);
 									Cookies.set("my_lang_settings", isEng ? "eng" : "mar");
 								});
 							});

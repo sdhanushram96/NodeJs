@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app" ng-init = "lang='mar'">
+<html ng-app="app">
 	<head>
 	  	<meta charset="utf-8">
 	  	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,7 +56,7 @@
 	  	<script type="text/ng-template" id="/categories.html">
 		  	<div class="container">
 				<div class="col-lg-2 pull-right">
-		  			<button ng-click="onCat()" class="btn btn-primary btn-md">Add {{New}} {{Category}}</button>
+		  			<button ng-click="onCat()" class="btn btn-primary btn-md">{{l.AddanewCategory.val}} </button>
 		  		</div>
 			  	
 		  		<h2>{{l.New.val}} {{metal="Gold"?l.Gold.val:l.Silver.val}} {{l.Article.val}} {{l.Category.val}}:</h2>
@@ -76,28 +76,27 @@
 				<form class="form-horizontal" ng-submit="submitForm()" role="form">
 				<!-- method="post" action="/api/stock/">-->
 					<div class="form-group">
-	    				<label class="control-label	col-lg-3" for="metalTxt">English Name:</label>
+	    				<label class="control-label	col-lg-3" for="metalTxt"> {{l.Englishname.val}} :</label>
 					    <div class="col-lg-9">
 							<input type="text" ng-model="engVal" required="true" class="input-lg form-control" id="engTxt">
 						</div>
 	  				</div>
 	  				<div class="form-group">
-	    				<label class="control-label	col-lg-3" for="metalTxt">Marathi Name:</label>
+	    				<label class="control-label	col-lg-3" for="metalTxt">{{l.Marathiname.val}}:</label>
 					    <div class="col-lg-9">
 							<input type="text" ng-model="marVal" class="input-lg form-control" id="marTxt">
 						</div>
 	  				</div>
 	  				<div id="img_grp" class="form-group">
-	    				<label class="control-label	col-lg-3" for="metalTxt">Image file:</label>
+	    				<label class="control-label	col-lg-3" for="metalTxt">{{l.Picturefile.val}}:</label>
 					    <div class="col-lg-9">
 							<input type="file" required="true"  ng-model="imageVal" class="has-feedback input-lg form-control" id="imgTxt">
 						</div>
-						<span class="hide" id="img_err_msg">Please select a Valid Image</span>
+						<span class="hide" id="img_err_msg">{{l.PleaseselectaProperPicture.val}} </span>
 	  				</div>
-	  				<!--<input type="hidden" ng-model="image_dataURI" id="image_uri" value=""></input>-->
 	  				<div class="row">
 	  					<img id="img_place" class="col-lg-3">
-	  					<button type="submit" id="sbt_btn" class="center-block btn btn-primary btn-lg">Upload</button>
+	  					<button type="submit" id="sbt_btn" class="center-block btn btn-primary btn-lg">{{l.Upload.val}}</button>
 	  				</div>
 			  	</form>
 			</div>
@@ -144,7 +143,6 @@
 			<div class="container">
 				<h2>{{New}} {{Article}} </h2>
 				<form class="form-horizontal" ng-submit="submitForm()" role="form">
-				<!-- method="post" action="/api/stock/">-->
 					<div class="row">
 						<div class="col-xs-10 col-lg-10">
 							<div class="form-group">
@@ -209,39 +207,7 @@
 	  			</form>
 			</div>
 		</script>
-		<script>/*
-			$(function(){
-				/*window.toggle = $("#langToggle").bootstrapToggle({
-					on: 'English',
-						off: 'Marathi',
-						offstyle:"warning"
-				}).change(function() {
-					window.scope.lang = $(this).prop('checked') ? "eng" : "mar";
-
-					if(window.obj){
-						l([window.obj]);
-					}
-					Cookies.set("my_lang_settings", window.scope.lang);
-				});
-				var lang = Cookies.get("my_lang_settings");
-
-				if(lang){
-					window.scope.lang = lang;
-				}else{
-					if(!window.scope.lang){
-						window.toggle.bootstrapToggle("off");
-					}
-				}
-				if(window.scope.lang == "eng"){
-					window.toggle.bootstrapToggle('on');
-				}
-
-				window.scope.$watch('lang', function() {
-					if(window.scope.lang){
-						window.toggle.bootstrapToggle((window.scope.lang == "eng")?'on':'off');
-					}
-				});
-			});*/
+		<script>
 			angular.module('app', [
 	    		'ngRoute',
 	    		'ui.bootstrap',
@@ -280,24 +246,7 @@
 			}])
 			.controller('categoriesController', ['$http', '$scope', '$routeParams', '$location', 'navbarSrv', function ($http, $scope, $routeParams, $location, navbar) {
 				navbar.setScope($scope);
-				/*var lang = Cookies.get("my_lang_settings");
-				if(window.scope.lang != lang){
-					window.scope.lang = lang;
-				}
-				$scope.$watch('lang', function() {
-					if(window.obj){
-						l([window.obj,function(){
-							if(window.data_data){
-								for (var i = 0; i < window.data_data.length; i++) {
-									if(window.scope[window.data_data[i]]){
-										$scope.categories[i].name = window.scope[window.data_data[i]];
-									}
-								}
-							}
-						}]);
-					}
-				});
-*/
+
 				var a=($location.path().split("/"));
 
 				$scope.metal = a[1];
@@ -308,33 +257,13 @@
 				$scope.onCat = function (){
 					window.location.href='#/'+$scope.metal_eng+'/addCategory';
 				}
-				
 
 				$http.get('/api/categories/'+a[1]).success(function(data){
 	        		$scope.categories = data;
-	        		/*var obj = {};
-	        		obj.metal = a[1];
-	        		obj.New = "New";
-	        		obj.Article = "Article";
-	        		obj.Category = "Category";
-	        		window.data_data = [];*/
 	        		for (var i = 0; i < data.length; i++) {
-	        			/*obj[data[i].name] = data[i].name;
-	        			window.data_data.push(data[i].name);*/
-//TODO BINDING VARIABLES
 	        			$scope.categories[i].name = $scope.l[data[i].name].val;
 	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
 	        		}
-	        		/*var lang = Cookies.get("my_lang_settings");
-					
-					if(lang){
-						window.scope.lang = lang;
-					}
-	        		l([obj,function(){
-						for (var i = data.length - 1; i >= 0; i--) {
-		        			$scope.categories[i].name = $scope[data[i].name];
-		        		}
-	        		}]);*/
 	      		}).error(function(data, status){
 	        		$scope.categories = [];
 	      		});
