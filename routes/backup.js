@@ -1,13 +1,19 @@
 var express = require('express');
 var router = express.Router();
+var backup = require('mongodb-backup');
 
 router.get('/', function(req, res, next) {
-	/*res.writeHead(200, {
-		'Content-Type': 'application/x-tar' // force header for tar download
+	res.writeHead(200, {
+		'Content-Type': 'application/x-tar'
 	});
-*/
-	res.send("Hello World! " + global.db);
+	back(res, null);
+});
 
+router.get('/:collection', function(req, res, next) {
+	res.writeHead(200, {
+		'Content-Type': 'application/x-tar'
+	});
+	back(res, req.params.collection);
 });
 
 function back(res, col) {
@@ -21,11 +27,11 @@ function back(res, col) {
 		cols.push("bills");
 		cols.push("bills_ids");
 	}
-	/*
+
 	backup({
-		uri: 'uri', // mongodb://<dbuser>:<dbpassword>@<dbdomain>.mongolab.com:<dbport>/<dbdatabase>
-		collections: cols, // save this collection only
-		stream: res, // send stream into client response
-	});*/
+		uri: global.db,
+		collections: cols,
+		stream: res,
+	});
 }
 module.exports = router;
