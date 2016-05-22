@@ -203,6 +203,7 @@
 									.get("/api/categories/"+article.category)
 									.success(function(category){
 										$scope.articles[key].category_name = $scope.l[category.name.replace(/\W/g, '')].val;
+										$scope.articles[key].category_src = base64ArrayBuffer(category.image.data.data);
 										$scope.eng_ids[key] = category.name.replace(/\W/g, '');
 										$scope.articles[key].bgClass = "list-group-item-"+((article.metal == "Gold")?"warning":"info");
 									});

@@ -257,11 +257,19 @@
 				$scope.onCat = function (){
 					window.location.href='#/'+$scope.metal_eng+'/addCategory';
 				}
-				
+				document.addEventListener("languageChanged",function(e){
+					for (var i = 0; i < $scope.eng_ids.length; i++) {
+						$scope.categories[i].name = $scope.l[$scope.eng_ids[i]].val;
+					}
+				});
+				$scope.eng_ids = [];
+
 				$http.get('/api/categories/'+a[1]).success(function(data){
 	        		$scope.categories = data;
 	        		for (var i = 0; i < data.length; i++) {
-	        			$scope.categories[i].name = $scope.l[data[i].name.replace(/\W/g, '')].val;
+	        			$scope.eng_ids[i] = data[i].name.replace(/\W/g, '');
+	        			$scope.categories[i].name = $scope.l[$scope.eng_ids[i]].val;
+	        			
 	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
 	        		}
 	      		}).error(function(data, status){
