@@ -42,8 +42,7 @@
 				return {
 					restrict: 'E',
 					transclude: true,
-					template: '<style>body{padding:90px 40px}</style>' +
-						'<nav class="navbar navbar-inverse navbar-fixed-top">' +
+					template: '<nav class="navbar navbar-inverse navbar-fixed-top">' +
 						'<div class="row">' +
 						'<div class="col-xs-1 center-block text-right" style="padding:10px">' +
 						'<div ng-show="!hideBack">' +

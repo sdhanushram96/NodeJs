@@ -1,27 +1,8 @@
 <!DOCTYPE html>
 <html ng-app="app">
 	<head>
-		<title>Jewellery Software</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
-		<link href="/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet"/>
-
-		<script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
-		<script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
-		<script src="/bower_components/angular/angular.js"></script>
-		<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
-
-		<script src="/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
-		<script src="/javascripts/includes.js" type="text/javascript"></script>
-		<script src="/javascripts/date.format.js" type="text/javascript"></script>
-		<script type="text/javascript" src="/javascripts/navbar.js"></script>
-		
-		<style type="text/css">
-			body {
-			   font-size: 20px;
-			}
-		</style>
+		<title><%= title %></title>
+		<% include includes.ejs %>
 	</head>
 	<body ng-controller="bodyController">
 		<navbar>
@@ -29,8 +10,6 @@
 				<%= title %>
 			</span>			
 		</navbar>
-<!--//TODO update with capital Wages------------------------ -->
-    	
 		<div class="container">
 			<div class="well form-inline row">
 				<div class="col-sm-4">
