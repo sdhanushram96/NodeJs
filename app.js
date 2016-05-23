@@ -1,4 +1,4 @@
-global.db = 'mongodb://localhost/jewel';
+global.db = 'mongodb://localhost/jewellery';
 //global.db = 'mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery';
 
 var express = require('express');
@@ -16,6 +16,7 @@ var categories = require('./routes/categories');
 var bills = require('./routes/bills');
 var bill_ids = require('./routes/bill_ids');
 var backup = require('./routes/backup');
+var restore = require('./routes/restore');
 var mongoose = require('mongoose');
 
 mongoose.connect(global.db, function(err) {
@@ -53,6 +54,7 @@ app.use('/api/localize', localizes);
 app.use('/api/bills', bills);
 app.use('/api/bill_ids', bill_ids);
 app.use('/api/backup', backup);
+app.use('/api/restore', restore);
 
 
 // catch 404 and forward to error handler

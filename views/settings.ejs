@@ -9,6 +9,7 @@
 		<link href="/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet"/>
 	    <script src="/javascripts/jquery-1.11.2.min.js" type="text/javascript"></script>
 	    <script src="/bower_components/angular/angular.js"></script>
+	    <script src="/bower_components/ng-file-upload/ng-file-upload.min.js"></script>
 	    <script src="/bower_components/angular-route/angular-route.min.js"></script>
 		<script src="/javascripts/js.cookie-2.1.1.min.js" type="text/javascript"></script>
 		 
@@ -68,9 +69,106 @@
 		
 		<script type="text/ng-template" id="/backup_restore.html">
 			<navbar></navbar>
-			<div class="jumbotron">
-				<h2>backup_restore :</h2>
+			<div class="container">
+				<h1>Everything</h1>
+				<h5>Filenames are like 
+					<font size=+1>
+						<b>
+							'backup-***.tar'
+						</b>
+					</font>
+					<span class="text-danger">
+						Do not upload any other type of file in Restore, it will break the software
+					</span>
+				</h5>
+				<div class="row text-center">
+					<div class="col-xs-6">
+						<button class="btn btn-lg btn-primary" onclick="window.location.href='/api/backup'">
+							Backup Everything
+						</button>
+					</div>
+					<div class="col-xs-6">
+						<button class="btn btn-lg btn-primary" ngf-select="uploadFiles($file, invalidFiles)" accept="application/x-tar">
+							Restore Everything
+						</button>
+						<br>
+						<div style="font:smaller">
+							{{f1.name}}
+			  				<span class="progress" style="margin:10px;height:1.3em;width : 200px;" ng-show="(f1.progress >= 0 && f1.progress < 100)">
+			      				<div style="width:{{f1.progress}}%" ng-bind="f1.progress + '%'"></div>
+			  				</span>
+			  				<div class="text-danger">
+			  					{{errorMsg1}}
+			  				</div>
+			  				<div class="text-success">
+			  					{{f1.result}}
+			  				</div>
+						</div>
+					</div>
+				</div>
+				<br>
+				<h1>Only Setup(No Stock,sales,bills)</h1>
+				<h5>Filenames are like 
+					<font size=+1>
+						<b>
+							'default-***.tar'
+						</b>
+					</font>
+					<span class="text-danger">
+						Do not upload any other type of file in Restore, it will break the software
+					</span>
+				</h5>
+				<div class="row text-center">
+					<div class="col-xs-6">
+						<button class="btn btn-primary" onclick="window.location.href='/api/backup/default'">
+							Backup Only Setup
+						</button>
+					</div>
+					<div class="col-xs-6">
+						<button class="btn btn-primary" ngf-select="uploadFiles2($file, invalidFiles)" accept="application/x-tar">
+							Restore Only Setup
+						</button>
+						<br>
+						<div style="font:smaller">
+							{{f2.name}}
+			  				<span class="progress" style="margin:10px;height:1.3em;width : 200px;" ng-show="(f2.progress >= 0 && f2.progress < 100)">
+			      				<div style="width:{{f2.progress}}%" ng-bind="f2.progress + '%'"></div>
+			  				</span>
+			  				<div class="text-danger">
+			  					{{errorMsg2}}
+			  				</div>
+			  				<div class="text-success">
+			  					{{f2.result}}
+			  				</div>
+						</div>
+					</div>
+				</div>
 			</div>
+			<style>
+				.thumb {
+				    width: 24px;
+				    height: 24px;
+				    float: none;
+				    position: relative;
+				    top: 7px;
+				}
+
+				form .progress {
+				    line-height: 15px;
+				}
+
+				.progress {
+				    display: inline-block;
+				    width: 100px;
+				    border: 3px groove #CCC;
+				}
+
+				.progress div {
+				    font-size: smaller;
+				    background: orange;
+				    width: 0;
+				}
+			</style>
 		</script>
 		
 		<script type="text/ng-template" id="/translation.html">
@@ -132,7 +230,8 @@
 			angular.module('app', [
 				'ngRoute',
 	    		'ui.bootstrap',
-				'navbar'
+				'navbar',
+				'ngFileUpload'
 	    	])
 	    	.config(['$routeProvider', function ($routeProvider) {
 			    $routeProvider
@@ -152,10 +251,51 @@
 			}])
 			.controller('homeController', ['$scope', 'navbarSrv', function ($scope, navbar) {
 				navbar.setScope($scope);
-				
 			}])
-			.controller('backResController', ['$scope', 'navbarSrv', function ($scope, navbar) {
+			.controller('backResController', ['$scope', 'navbarSrv', 'Upload', '$timeout', function ($scope, navbar, Upload, $timeout) {
 				navbar.setScope($scope);
+				$scope.uploadFiles = function(file, errFiles) {
+			        $scope.f1 = file;
+			        if (file) {
+			            file.upload = Upload.upload({
+			                url: 'api/restore/',
+			                data: {file: file}
+			            });
+
+			            file.upload.then(function (response) {
+			                $timeout(function () {
+			                    file.result = response.data;
+			                });
+			            }, function (response) {
+			                if (response.status > 0)
+			                    $scope.errorMsg1 = response.status + ': ' + response.data;
+			            }, function (evt) {
+			                file.progress = Math.min(100, parseInt(100.0 * 
+			                                         evt.loaded / evt.total));
+			            });
+			        }
+				}
+				$scope.uploadFiles2 = function(file, errFiles) {
+			        $scope.f2 = file;
+			        if (file) {
+			            file.upload = Upload.upload({
+			                url: 'api/restore/default',
+			                data: {file: file}
+			            });
+
+			            file.upload.then(function (response) {
+			                $timeout(function () {
+			                    file.result = response.data;
+			                });
+			            }, function (response) {
+			                if (response.status > 0)
+			                    $scope.errorMsg2 = response.status + ': ' + response.data;
+			            }, function (evt) {
+			                file.progress = Math.min(100, parseInt(100.0 * 
+			                                         evt.loaded / evt.total));
+			            });
+			        }
+				}
 				
 			}])
 			.controller('translationController', ['$scope', '$http', 'navbarSrv', function ($scope, $http, navbar) {
