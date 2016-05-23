@@ -21,6 +21,14 @@ router.get('/default', function(req, res, next) {
 	back(res, ['localizes', 'categories']);
 });
 
+router.get('/factory', function(req, res, next) {
+	res.writeHead(200, {
+		'Content-Type': 'application/x-tar',
+		'Content-disposition': 'attachment; filename=factory.tar'
+	});
+	back(res, ['localizes']);
+});
+
 router.get('/:collection', function(req, res, next) {
 	res.writeHead(200, {
 		'Content-Type': 'application/x-tar',

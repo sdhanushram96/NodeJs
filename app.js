@@ -1,5 +1,5 @@
-//global.db = 'mongodb://localhost/jewellery';
-global.db = 'mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery';
+global.db = 'mongodb://localhost/jewellery';
+//global.db = 'mongodb://user1:mypass@ds017432.mlab.com:17432/jewellery';
 
 var express = require('express');
 var path = require('path');

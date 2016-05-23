@@ -68,6 +68,10 @@
 				<button class="button btn-lg btn-danger" ng-click="reset()">
 					Factory Reset
 				</button>
+				<br><br>
+				<button class="btn btn-md btn-warning" onclick="window.location.href='/api/backup/factory'">
+						Temporary Button for factory image factory.tar
+				</button>
 			</div>
 			<div id="resetProgress" style="display:none;background-color: rgba(0,0,0,0.8);position:fixed;left:0px;right:0px;top:0px;bottom:0px;z-index:99999;color:#fff;padding-top:60px" class="text-center">
 				<span class="h1">
@@ -222,10 +226,10 @@
   							</button>
   						</span>
   						<span class="col-xs-1">
-  						<!--	<button ng-click="remove($index, word._id)" class="btn btn-danger">
+  							<button ng-click="remove($index, word._id)" class="btn btn-danger">
   								Delete&nbsp;
   								<span class="glyphicon glyphicon-trash"></span>
-  							</button>-->
+  							</button>
   						</span>
   					</li>
   				</ul>
