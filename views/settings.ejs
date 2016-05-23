@@ -59,37 +59,48 @@
 			<div class="jumbotron">
 				<h2>Settings :</h2>
 				<button class="button btn-lg btn-primary" onclick="window.location.href='#/backup_restore'">
-					Backup and Restore
+					{{l.BackupandRestore.val}}
 				</button>
 				<button class="button btn-lg btn-primary" onclick="window.location.href='#/translation'">
 					{{l.Translation.val}}
 				</button>
+				
+				<button class="button btn-lg btn-danger" ng-click="reset()">
+					Factory Reset
+				</button>
+			</div>
+			<div id="resetProgress" style="display:none;background-color: rgba(0,0,0,0.8);position:fixed;left:0px;right:0px;top:0px;bottom:0px;z-index:99999;color:#fff;padding-top:60px" class="text-center">
+				<span class="h1">
+					<span class="text">Factory Resetting ...<br>Pleast wait.</span>
+					<span class="glyphicon glyphicon-refresh glyphicon-spin"/>
+				</span>
 			</div>
 		</script>
 		
 		<script type="text/ng-template" id="/backup_restore.html">
 			<navbar></navbar>
 			<div class="container">
-				<h1>Everything</h1>
-				<h5>Filenames are like 
+				<h1>{{l.Everything.val}}</h1>
+				<h5>
+					{{l.Filenamesshouldbelikethis.val}}
 					<font size=+1>
 						<b>
 							'backup-***.tar'
 						</b>
 					</font>
 					<span class="text-danger">
-						Do not upload any other type of file in Restore, it will break the software
+						{{l.DonotuploadanyothertypeoffileinRestoreitwillbreakthesoftware.val}}
 					</span>
 				</h5>
 				<div class="row text-center">
 					<div class="col-xs-6">
 						<button class="btn btn-lg btn-primary" onclick="window.location.href='/api/backup'">
-							Backup Everything
+							{{l.BackupEverything.val}}
 						</button>
 					</div>
 					<div class="col-xs-6">
 						<button class="btn btn-lg btn-primary" ngf-select="uploadFiles($file, invalidFiles)" accept="application/x-tar">
-							Restore Everything
+							{{l.RestoreEverything.val}}
 						</button>
 						<br>
 						<div style="font:smaller">
@@ -107,26 +118,27 @@
 					</div>
 				</div>
 				<br>
-				<h1>Only Setup(No Stock,sales,bills)</h1>
-				<h5>Filenames are like 
+				<h1>{{l.OnlySetup.val}}({{l.NoStocksalesbills.val}})</h1>
+				<h5>
+					{{l.Filenamesshouldbelikethis.val}}
 					<font size=+1>
 						<b>
 							'default-***.tar'
 						</b>
 					</font>
 					<span class="text-danger">
-						Do not upload any other type of file in Restore, it will break the software
+						{{l.DonotuploadanyothertypeoffileinRestoreitwillbreakthesoftware.val}}
 					</span>
 				</h5>
 				<div class="row text-center">
 					<div class="col-xs-6">
 						<button class="btn btn-primary" onclick="window.location.href='/api/backup/default'">
-							Backup Only Setup
+							{{l.BackuponlySetup.val}}
 						</button>
 					</div>
 					<div class="col-xs-6">
 						<button class="btn btn-primary" ngf-select="uploadFiles2($file, invalidFiles)" accept="application/x-tar">
-							Restore Only Setup
+							{{l.RestoreonlySetup.val}}
 						</button>
 						<br>
 						<div style="font:smaller">
@@ -249,8 +261,36 @@
 			      	})
 
 			}])
-			.controller('homeController', ['$scope', 'navbarSrv', function ($scope, navbar) {
+			.controller('homeController', ['$scope', 'navbarSrv', '$http', function ($scope, navbar, $http) {
 				navbar.setScope($scope);
+				$scope.reset = function(){
+					var a = confirm(
+						"Are You Sure to Delete Everything?\n\n\n"+
+						"Categories, Stocks, Sales, Bills\n\n\n"
+					);
+					if(a){
+						$("#resetProgress").show();
+						$http
+							.put("/api/restore/reset")
+							.success(function(data){
+								$("#resetProgress .text").html(
+									'<p class="text-success">'+
+									data+
+									'</p>'
+								)
+								setTimeout(function(){
+									window.location.href = "/";
+								},2000);
+							})
+							.error(function(data){
+								$("#resetProgress .text").html(
+									'<p class="text-danger">'+
+									data+
+									'</p>'
+								)
+							});
+					}
+				}
 			}])
 			.controller('backResController', ['$scope', 'navbarSrv', 'Upload', '$timeout', function ($scope, navbar, Upload, $timeout) {
 				navbar.setScope($scope);
