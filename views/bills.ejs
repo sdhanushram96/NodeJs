@@ -5,7 +5,7 @@
 		<% include includes.ejs %>
 		<style>
 			.item{
-				background-color: #e1f2ff;
+				background-color: #f1f1ff;
 			}
 		</style>
 	</head>
@@ -51,7 +51,7 @@
 						<tbody>
 							<tr ng-repeat="article in bill.sales_articles">
 								<td>
-									{{article.metal}}
+									{{navbar.getVal(article.metal)}}
 								</td>
 								<td>
 									{{navbar.getVal(article.category.name)}}
@@ -79,10 +79,13 @@
 							{{l.AdditionalCharges.val}}:{{bill.additional_charges}}
 						</span>
 						<span class="col-xs-2">
-							{{l.Subtotal.val}}:{{bill.sub_total}}
+							{{l.Subtotal.val}}: {{bill.sub_total | currency:"&#8377;":2}}
 						</span>
 						<span class="col-xs-2">
 							{{l.Tax.val}}:{{bill.tax}}
+						</span>
+						<span class="col-xs-3 text-info" style="font-size: 22px">
+							{{l.Total.val}}: {{bill.total | currency:"&#8377;":2}}
 						</span>
 
 					</div>

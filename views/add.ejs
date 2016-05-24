@@ -35,7 +35,7 @@
 		  			<button ng-click="onCat()" class="btn btn-primary btn-md">{{l.AddanewCategory.val}} </button>
 		  		</div>
 			  	
-		  		<h2>{{l.New.val}} {{metal=="Gold"?l.Gold.val:l.Silver.val}} {{l.Article.val}} :</h2>
+		  		<h2>{{l.New.val}} {{navbar.getVal(metal)}} {{l.Article.val}} :</h2>
 				<div ng-repeat="card in categories">
 					<a ng-href="/add/#/{{metal_eng}}/{{card._id}}" >
 						<div class="btn {{btnClass}} col-xs-8 col-sm-4 col-md-2 col-lg-2" style="margin :5px;">
@@ -48,7 +48,7 @@
 		</script>
 	  	<script type="text/ng-template" id="/add_category.html">
 			<div class="container">
-				<h2>{{l.New.val}} {{metal="Gold"?l.Gold.val:l.Silver.val}} {{l.Category.val}}</h2>
+				<h2>{{l.New.val}} {{navbar.getVal(metal)}} {{l.Category.val}}</h2>
 				<form class="form-horizontal" ng-submit="submitForm()" role="form">
 				<!-- method="post" action="/api/stock/">-->
 					<div class="form-group">
