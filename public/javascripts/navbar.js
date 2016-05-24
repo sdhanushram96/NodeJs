@@ -21,7 +21,10 @@
 				return val.replace(/\W/g, '');
 			}
 			this.getVal = function(text) {
-				return this.list[this.sanitize(text)].val;
+				if (this.list[this.sanitize(text)])
+					return this.list[this.sanitize(text)].val;
+				else
+					return ""
 			}
 			this.update = function() {
 				//var key in obj  \n if obj.hasOwnProperty(key)
