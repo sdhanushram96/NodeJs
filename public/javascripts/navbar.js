@@ -15,6 +15,13 @@
 			}
 			this.setScope = function(scope) {
 				scope.l = this.list;
+				scope.navbar = this;
+			}
+			this.sanitize = function(val) {
+				return val.replace(/\W/g, '');
+			}
+			this.getVal = function(text) {
+				return this.list[this.sanitize(text)].val;
 			}
 			this.update = function() {
 				//var key in obj  \n if obj.hasOwnProperty(key)
@@ -33,7 +40,7 @@
 				}
 			}
 			this.add = function(obj) {
-				this.list[obj.eng.replace(/\W/g, '')] = obj;
+				this.list[this.sanitize(obj.eng)] = obj;
 				this.update();
 			}
 		})

@@ -3,10 +3,20 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 var Bill = require('../models/Bill.js');
+//.populate('sales_articles sales_articles.category')
+//.populate('sales_articles')
 
 router.get('/', function(req, res, next) {
 	Bill
 		.find()
+		.populate({
+			path: 'sales_articles',
+			model: 'Article',
+			populate: {
+				path: 'category',
+				model: 'Category'
+			}
+		})
 		.exec(function(err, articles) {
 			if (err) return next(err);
 			res.json(articles);
@@ -15,8 +25,10 @@ router.get('/', function(req, res, next) {
 
 router.get('/:id', function(req, res, next) {
 	Bill
-		.find()
-		.where('_id').equals(req.params.id)
+		.findOne({
+			_id: req.params.id,
+		})
+		.populate('sales_articles')
 		.exec(function(err, post) {
 			if (err) return next(err);
 			res.json(post);

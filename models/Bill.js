@@ -18,9 +18,10 @@ var BillSchema = new mongoose.Schema({
 	cust_contact: {
 		type: Number
 	},
-	sales_articles: [
-		mongoose.Schema.Types.ObjectId
-	],
+	sales_articles: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Article'
+	}],
 	resell_articles: [
 		String //TODO added mood saaman
 	],

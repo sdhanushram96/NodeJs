@@ -248,7 +248,7 @@
 				$http.get('/api/categories/'+a[1]).success(function(data){
 	        		$scope.categories = data;
 	        		for (var i = 0; i < data.length; i++) {
-	        			$scope.eng_ids[i] = data[i].name.replace(/\W/g, '');
+	        			$scope.eng_ids[i] = navbar.sanitize(data[i].name);
 	        			$scope.categories[i].name = $scope.l[$scope.eng_ids[i]].val;
 	        			
 	        			$scope.categories[i].image = base64ArrayBuffer(data[i].image.data.data);
@@ -312,7 +312,7 @@
 					.success(function(data){
 						$scope.metal_eng = a[1];
 						$scope.category_id = data._id;
-						$scope.category_name = $scope.l[data.name.replace(/\W/g, '')].val;
+						$scope.category_name = navbar.getVal(data.name);
 
 						$scope.category_src ="data:image/png;base64," + base64ArrayBuffer(data.image.data.data);;
 						

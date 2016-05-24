@@ -3,9 +3,80 @@
 	<head>
 		<title>Bills</title>
 		<% include includes.ejs %>
+		<style>
+			.item{
+				background-color: #e1f2ff;
+			}
+		</style>
 	</head>
 	<body ng-controller="bodyController">
-
+		<navbar></navbar>
+		<span class="text-center" style="color:#ccc;font-size:1em;line-height: 1em;padding-top: 12px;position:fixed;width:70%;top:0.01em;z-index:99999;margin-left:10%">
+			<label>
+				{{l.Search.val}}:
+				<input ng-model="searchText" type="text" style="color:black;margin-left:15px">
+			</label>
+		</span>
+		<div class="container">
+			<ul class="list-group" ng-repeat="bill in arr|filter:searchText">
+  				<li class="list-group-item row item">
+  					<div class="row">
+  						<span class="col-xs-2" style="font-size: 22px">
+  							{{l.BillNo.val}}.:{{bill.bill_no}}
+  						</span>
+  						<span class="col-xs-2 text-center">
+  							{{l.Gold.val}}: {{bill.gold_rate}}
+  						</span>
+  						<span class="col-xs-2 text-center">
+  							{{l.Silver.val}}: {{bill.silver_rate}}
+  						</span>
+  						<span class="col-xs-6 text-center">
+  							{{getDate(bill.date)}}
+  						</span>
+  					</div>
+  					<hr noshade style="height: 1px">
+  					<table class="table table-striped">
+		    			<thead>
+							<tr>
+								<th>{{l.Metal.val}}</th>
+								<th>{{l.Category.val}}</th>
+								<th>{{l.Karat.val}}</th>
+								<th>{{l.Grossweight.val}}</th>
+								<th>{{l.Netweight.val}}</th>
+								<th>{{l.Wages.val}}</th>
+								<th>{{l.Total.val}}</th>
+								<th> </th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="article in bill.sales_articles">
+								<td>
+									{{article.metal}}
+								</td>
+								<td>
+									{{navbar.getVal(article.category.name)}}
+								</td>
+								<td>
+									{{article.karat}}
+								</td>
+								<td>
+									{{article.grossWeight}}
+								</td>
+								<td>
+									{{article.netWeight}}
+								</td>
+								<td>
+									{{article.wages}}
+								</td>
+								<td>
+									{{article.cost}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+  				</li>
+  			</ul>
+		</div>
 		<script type="text/javascript">
 			angular
 				.module('app',[
@@ -14,6 +85,16 @@
 				.controller("bodyController",['$scope', '$http', 'navbarSrv', function($scope, $http, navbar){
 					navbar.setScope($scope);
 
+					$http
+						.get('/api/bills/')
+						.success(function(data){
+							$scope.arr = data;
+							console.log(data[0].sales_articles);
+						});
+					$scope.getDate = function(date){
+						var dt = new Date(date);
+						return(dt.format("h:MM:ss tt d-mmm-yy"));
+					}
 				}]);
 		</script>
 	</body>
