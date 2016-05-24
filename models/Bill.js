@@ -41,6 +41,9 @@ var BillSchema = new mongoose.Schema({
 		type: Number,
 		required: true
 	},
+	tax: {
+		type: Number
+	}
 	total: {
 		type: Number,
 		required: true
