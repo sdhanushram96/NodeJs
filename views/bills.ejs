@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html ng-app="app">
+	<head>
+		<title>Bills</title>
+		<% include includes.ejs %>
+	</head>
+	<body ng-controller="bodyController">
+
+		<script type="text/javascript">
+			angular
+				.module('app',[
+					'navbar'
+				])
+				.controller("bodyController",['$scope', '$http', 'navbarSrv', function($scope, $http, navbar){
+					navbar.setScope($scope);
+
+				}]);
+		</script>
+	</body>
+</html>

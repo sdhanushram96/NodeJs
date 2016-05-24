@@ -42,32 +42,35 @@
 				</div>
 			</div>
 			<div class="row text-center">
-				<div class="col-xs-3">
+				<div class="col-xs-2">
 					<button onclick="goto('add')" class="btn btn-primary btn-lg">
 						{{l.New.val}} {{l.Article.val}}
 					</button>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-2">
 					<button onclick="goto('stock')" class="btn btn-primary btn-lg">
 						{{l.Stock.val}}
 					</button>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-2">
 					<button onclick="goto('sales')" class="btn btn-primary btn-lg">
 						{{l.Sales.val}}
 					</button>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-2">
 					<button onclick="goto('cart')" class="btn btn-primary btn-lg">
 						{{l.Cart.val}}
 					</button>
 				</div>
-				<div class="col-xs-3">
-					<br>
+				<div class="col-xs-2">
+					<button onclick="goto('bills')" class="btn btn-primary btn-lg">
+						Bill
+					</button>
+				</div>
+				<div class="col-xs-2">
 					<button onclick="goto('settings')" class="btn btn-primary btn-lg">
 						{{l.Settings.val}} 
 						<span class="glyphicon glyphicon-cog"></span>
-						
 					</button>
 				</div>
 			</div>
@@ -81,21 +84,7 @@
 					'navbar'
 				])
 				.controller("bodyController",['$scope', '$http', 'navbarSrv', function($scope, $http, navbar){
-					window.scope = $scope;
-					window.http = $http;
 					navbar.setScope($scope);
-					navbar.add({
-						eng: "x A sedf Test",
-						mar: "ascadadf asdf"
-					});
-					/*l([{
-						New:"New",
-						Gold:"Gold",
-						Silver:"Silver",
-						Article:"Article",
-						Todays : "Today's",
-						"rate" : "rate"
-					}]);*/
 					
 					var g_rate = Cookies.get("gold_rate");
 					var s_rate = Cookies.get("silver_rate");

@@ -8,9 +8,9 @@ router.get('/', function(req, res, next) {
 	});
 });
 
-router.get('/test', function(req, res, next) {
-	res.render('test', {
-		title: 'test'
+router.get('/bills', function(req, res, next) {
+	res.render('bills', {
+		title: 'bills'
 	});
 });
 
