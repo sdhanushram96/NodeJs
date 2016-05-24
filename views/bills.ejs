@@ -112,7 +112,6 @@
 						.get('/api/bills/')
 						.success(function(data){
 							$scope.arr = data;
-							console.log(data[0]);
 						});
 					$scope.getDate = function(date){
 						var dt = new Date(date);
